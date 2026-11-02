@@ -136,6 +136,7 @@ namespace MainProjeto.MenuPrincipal.Editor
                 start.onClick.Invoke(); // Invocacao programatica tambem precisa passar pela validacao.
                 Check(context.Session.State == LocalSessionState.None, "chamada de iniciar sem escolha nao cria sessao");
                 back.onClick.Invoke();
+                await CheckParticipantScroll(ui, client, list, open, refresh, back, context);
                 CheckMainLayout(menu, main);
 
                 SessionState.SetInt(ResultKey, 0);
@@ -146,6 +147,43 @@ namespace MainProjeto.MenuPrincipal.Editor
                 Debug.LogError("MENU_CANVAS_CHECKS: FAIL " + ex.GetType().Name + ": " + ex.Message);
             }
             finally { EditorApplication.isPlaying = false; }
+        }
+
+        private static async Task CheckParticipantScroll(ParticipantSelectionUI ui, RosterFixture client,
+            GameObject list, Button open, Button refresh, Button back, ApplicationSessionContext context)
+        {
+            open.onClick.Invoke();
+            client.Rows = RosterFixture.ManyRows(8);
+            refresh.onClick.Invoke();
+            await WaitForRoster(ui);
+            await Task.Delay(100); // ScrollRect atualiza a visibilidade em LateUpdate.
+            Canvas.ForceUpdateCanvases();
+            var scroll = Field<ScrollRect>(ui, "scrollRect");
+            Check(scroll.vertical && !scroll.horizontal, "lista permite somente rolagem vertical");
+            Check(scroll.content.rect.height > scroll.viewport.rect.height, "oito nomes excedem a janela");
+            Check(scroll.verticalScrollbar != null && scroll.verticalScrollbar.gameObject.activeInHierarchy, "barra aparece quando a lista excede a janela");
+            Check(scroll.verticalNormalizedPosition > 0.99f, "consulta manual comeca no topo");
+            var last = list.GetComponentsInChildren<ParticipantListItemUI>().Single(item => item.ParticipantCode == RosterFixture.Code(8));
+            Check(!BoundsIn(scroll.viewport, (RectTransform)last.transform).Overlaps(scroll.viewport.rect), "ultimo nome inicialmente fica fora da janela");
+            scroll.verticalScrollbar.value = 0f;
+            Canvas.ForceUpdateCanvases();
+            Check(BoundsIn(scroll.viewport, (RectTransform)last.transform).Overlaps(scroll.viewport.rect), "arrastar a barra revela o ultimo nome");
+            Field<Button>(last, "selectButton").onClick.Invoke();
+            Check(context.Participants.Selected.ParticipantCode == RosterFixture.Code(8), "nome revelado pela rolagem pode ser escolhido por UUID");
+            client.Rows = RosterFixture.ManyRows(10);
+            ui.RefreshInBackground();
+            await WaitForRoster(ui);
+            Check(scroll.verticalNormalizedPosition < 0.01f, "atualizacao automatica preserva a posicao de rolagem");
+            client.Rows = RosterFixture.ManyRows(2);
+            refresh.onClick.Invoke();
+            await WaitForRoster(ui);
+            await Task.Delay(100);
+            Canvas.ForceUpdateCanvases();
+            Check(scroll.content.rect.height <= scroll.viewport.rect.height, "dois nomes cabem sem rolagem");
+            Check(!scroll.verticalScrollbar.gameObject.activeSelf, "barra fica oculta quando todos os nomes cabem");
+            Check(list.GetComponentsInChildren<ParticipantListItemUI>().Length == 2, "atualizacao remove linhas antigas");
+            back.onClick.Invoke();
+            Check(!list.activeInHierarchy, "voltar funciona depois da rolagem");
         }
 
         private static void CheckMainLayout(MenuIntegrationController menu, GameObject main)
@@ -214,6 +252,9 @@ namespace MainProjeto.MenuPrincipal.Editor
             public string Rows = "[{\"participant_code\":\"" + First + "\",\"display_name\":\"Pessoa teste\"},{\"participant_code\":\"" + Second + "\",\"display_name\":\"Pessoa teste\"}]";
             public bool Fail;
             public TaskCompletionSource<string> Pending;
+            public static string Code(int number) => number.ToString("x32");
+            public static string ManyRows(int count) => "[" + string.Join(",", Enumerable.Range(1, count).Select(number =>
+                "{\"participant_code\":\"" + Code(number) + "\",\"display_name\":\"Participante teste " + number + "\"}")) + "]";
             public Task<string> GetAsync(string query, CancellationToken cancellationToken = default)
             {
                 cancellationToken.ThrowIfCancellationRequested();

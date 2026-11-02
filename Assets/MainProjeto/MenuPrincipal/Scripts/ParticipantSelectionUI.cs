@@ -54,6 +54,7 @@ namespace MainProjeto.MenuPrincipal.Scripts
                 Destroy(row.gameObject);
             }
             rows.Clear();
+            RefreshScrollLayout(1f);
             UpdateControls();
             StateChanged?.Invoke();
         }
@@ -115,9 +116,11 @@ namespace MainProjeto.MenuPrincipal.Scripts
                 cancellation.Token.ThrowIfCancellationRequested();
                 if (!ReferenceEquals(currentQuery, cancellation) || this == null) return;
                 var participants = update.Participants;
-                if (update.Changed || !HasValidList) RenderParticipants(participants);
+                float scrollPosition = scrollRect.verticalNormalizedPosition;
+                bool rebuild = update.Changed || !HasValidList;
+                if (rebuild) RenderParticipants(participants);
                 HasValidList = true;
-                if (!silent) scrollRect.verticalNormalizedPosition = 1f;
+                if (rebuild || !silent) RefreshScrollLayout(silent ? scrollPosition : 1f);
                 ShowMessage(participants.Count == 0
                     ? "Nenhum participante disponível para esta conta."
                     : "Selecione o participante e volte ao menu para iniciar.");
@@ -199,6 +202,16 @@ namespace MainProjeto.MenuPrincipal.Scripts
         private bool IsCurrent(CancellationTokenSource query)
         {
             return this != null && ReferenceEquals(currentQuery, query) && !query.IsCancellationRequested;
+        }
+
+        private void RefreshScrollLayout(float position)
+        {
+            // O tamanho precisa estar atualizado antes de posicionar a lista e a barra.
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)scrollRect.transform);
+            scrollRect.StopMovement();
+            scrollRect.verticalNormalizedPosition = Mathf.Clamp01(position);
         }
 
         private void UpdateControls()
