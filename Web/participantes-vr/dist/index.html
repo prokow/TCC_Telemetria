@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Cadastro de participantes e análise de sessões de telemetria do simulador educacional Circuitos VR.">
+  <meta name="referrer" content="no-referrer"><meta name="color-scheme" content="light">
+  <title>Participantes · Circuitos VR</title>
+  <link rel="icon" href="./icon.svg" type="image/svg+xml"><link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./analysis.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Ir para o conteúdo</a>
+  <aside class="sidebar">
+    <a class="brand" href="./" aria-label="Circuitos VR, início"><img src="./icon.svg" alt="" width="42" height="42"><span>CIRCUITOS <b>VR</b><small>LABORATÓRIO EDUCACIONAL</small></span></a>
+    <div class="workspace-label">ÁREA DO RESPONSÁVEL</div>
+    <div class="nav-current"><span aria-hidden="true">◉</span> Participantes <span class="nav-dot"></span></div>
+    <div class="sidebar-note"><span class="eyebrow">DA WEB À EXPERIÊNCIA</span><h2>Uma identidade.<br>Toda a jornada.</h2><p>Cadastre aqui. Selecione no menu VR. A experiência acompanha o participante até a última atividade.</p><div class="flow"><span>01 Cadastro</span><span>02 Seleção VR</span><span>03 Experiência</span></div></div>
+    <div class="sidebar-footer"><span class="live-dot"></span> Ensino de circuitos elétricos<small>Organização de participantes</small></div>
+  </aside>
+  <main id="main">
+    <header class="topbar"><span>LAB / GESTÃO DE PARTICIPANTES</span><div class="account"><span id="connection" class="connection">Aguardando acesso</span><button id="sign-out" class="text-button" hidden>Encerrar acesso <span aria-hidden="true">↗</span></button></div></header>
+    <section id="login-section" class="login-layout">
+      <div class="login-intro"><span class="eyebrow">PREPARE A PRÓXIMA EXPERIÊNCIA</span><h1>Cada experiência<br>começa com<br><em>um nome.</em></h1><p>Um espaço para cadastrar e organizar as pessoas que participarão do simulador.</p><div class="intro-line"><span>CADASTRO</span><i></i><span>MENU VR</span><i></i><span>ATIVIDADES</span></div></div>
+      <section class="card login-card" aria-labelledby="login-title"><span class="card-index">ACESSO DO RESPONSÁVEL</span><h2 id="login-title">Bem-vindo ao laboratório.</h2><p>Entre com a conta autorizada para gerenciar os participantes.</p><form id="login-form"><label for="email">E-mail</label><input id="email" name="email" type="email" required autocomplete="username" placeholder="Seu e-mail"><label for="password">Senha</label><input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Sua senha"><button id="login-submit" class="primary full" type="submit">Entrar no laboratório <span aria-hidden="true">→</span></button><p id="login-message" class="message" role="status" aria-live="polite"></p></form><div class="connection-check"><button id="check-connection" type="button" class="secondary">Verificar conexão</button><p id="connection-check-message" class="message" role="status" aria-live="polite"></p></div><p class="privacy-note">Acesso restrito à equipe responsável pela aplicação.</p></section>
+    </section>
+    <section id="dashboard" hidden>
+      <p id="admin-account" class="admin-account" hidden></p>
+      <div class="page-heading"><div><span class="eyebrow">PESSOAS ANTES DOS DADOS</span><h1>Participantes<span class="heading-dot">.</span></h1><p>Cadastre uma pessoa e prepare a próxima experiência.</p></div><div class="count-card"><strong id="total-count">—</strong><span>PARTICIPANTES<br>CADASTRADOS</span></div></div>
+      <div id="page-message" class="page-message" role="status" aria-live="polite" hidden></div>
+      <div class="dashboard-grid">
+        <div class="left-column">
+          <section class="card register-card" aria-labelledby="register-title"><div class="card-heading"><span class="card-index">01 / CADASTRAR</span><span class="round-plus" aria-hidden="true">+</span></div><h2 id="register-title">Novo participante</h2><p>Informe o nome que será exibido no menu do simulador.</p><form id="register-form"><label for="participant-name">Nome do participante</label><input id="participant-name" name="participant-name" required maxlength="120" autocomplete="off" placeholder="Como a pessoa se chama?"><button id="register-submit" class="primary full" type="submit">Cadastrar participante <span aria-hidden="true">↗</span></button><p id="register-message" class="message" role="status" aria-live="polite"></p></form><div class="form-note"><span aria-hidden="true">↳</span> Após cadastrar, atualize a lista no menu VR.</div></section>
+          <section class="card recent-card" aria-labelledby="recent-title"><div class="card-heading"><span class="card-index">NESTA SESSÃO DE CADASTRO</span><span id="recent-count" class="small-badge">0</span></div><h2 id="recent-title">Recém-adicionados</h2><p id="recent-empty" class="muted-empty">Os cadastros feitos aqui aparecerão nesta lista.</p><ul id="recent-list" class="recent-list"></ul></section>
+        </div>
+        <section class="card roster-card" aria-labelledby="roster-title"><div class="roster-heading"><div><span class="card-index">02 / CONSULTAR</span><h2 id="roster-title">Participantes cadastrados</h2></div><button id="refresh" class="secondary" type="button"><span aria-hidden="true">↻</span> Atualizar</button></div><div class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" aria-label="Buscar participante por nome ou código" placeholder="Buscar por nome ou código"><span id="visible-count" class="search-count">—</span></div><div class="table-scroll"><table><thead><tr><th scope="col">PARTICIPANTE</th><th scope="col">IDENTIFICAÇÃO</th><th scope="col">SESSÕES</th><th scope="col">TENTATIVAS</th><th scope="col">ACERTOS</th><th scope="col">ERROS</th><th scope="col">CADASTRO</th><th scope="col">AÇÕES</th></tr></thead><tbody id="participant-rows"></tbody></table></div><div id="roster-empty" class="empty-state" role="status"><span class="empty-icon" aria-hidden="true">◎</span><h3>Buscando participantes</h3><p>Aguarde a consulta dos cadastros.</p></div><div class="table-footer"><span>Selecione o participante no menu do simulador.</span><span class="legend"><i></i> Cadastrado</span></div></section>
+      </div>
+      <section id="participant-management" class="card management-card" hidden aria-labelledby="manage-title">
+        <div class="roster-heading"><div><span class="card-index">ADMINISTRAÇÃO</span><h2 id="manage-title">Editar participante</h2></div><button id="manage-close" class="secondary" type="button">Fechar edição</button></div>
+        <div class="management-content"><p>UUID <code id="manage-code"></code></p>
+          <form id="manage-form"><label for="manage-name">Nome do participante</label><input id="manage-name" required maxlength="120" autocomplete="off"><button id="manage-save" class="primary" type="submit">Salvar nome</button></form>
+          <div class="management-delete"><h3>Excluir cadastro sem histórico</h3><p id="manage-delete-note"></p><label for="manage-delete-confirm">Digite o UUID completo para confirmar</label><input id="manage-delete-confirm" maxlength="32" autocomplete="off" spellcheck="false"><button id="manage-delete" class="secondary danger" type="button" disabled>Excluir cadastro</button></div>
+          <p id="manage-message" class="message" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+      <footer class="page-footer"><span>CIRCUITOS VR <span class="footer-separator">/</span> Laboratório educacional</span><span>Os nomes são vinculados a identificadores únicos.</span></footer>
+    </section>
+    <section id="analysis-panel" hidden aria-labelledby="analysis-name">
+      <div class="analysis-toolbar"><button id="analysis-back" class="text-button" type="button">← Voltar para participantes</button><div class="analysis-actions"><button id="analysis-refresh" class="secondary" type="button">Atualizar banco</button><button id="analysis-export" class="secondary" type="button" disabled>Exportar sessões · CSV</button></div></div>
+      <div class="page-heading analysis-heading"><div><span class="eyebrow">JORNADA NO SIMULADOR</span><h1 id="analysis-name" tabindex="-1"></h1><p>UUID <code id="analysis-code"></code></p><p id="analysis-created" class="analysis-meta"></p></div><span id="analysis-source-badge" class="status-badge">Supabase</span></div>
+      <div class="analysis-source-row"><label for="analysis-source">Origem da análise<select id="analysis-source"><option value="supabase">Sessões do Supabase</option><option value="local">Arquivos locais analisados</option></select></label><div class="import-area"><label class="secondary file-button" for="analysis-file">Analisar Session.json do Unity<input id="analysis-file" type="file" accept=".json,application/json"></label><span>Arquivo de até 32 MB. Análise local, sem envio ao servidor.</span></div></div>
+      <p id="analysis-message" class="analysis-notice" role="status" aria-live="polite"></p>
+      <div class="metric-grid" aria-label="Resumo do participante">
+        <article class="card metric"><span>SESSÕES</span><strong id="metric-sessions">—</strong><small>Na origem selecionada</small></article>
+        <article class="card metric"><span>TEMPO TOTAL</span><strong id="metric-duration">—</strong><small>Tempo registrado no simulador</small></article>
+        <article class="card metric"><span>TENTATIVAS</span><strong id="metric-attempts">—</strong><small>Respostas registradas</small></article>
+        <article class="card metric"><span>ACERTOS</span><strong id="metric-correct">—</strong><small>Resultados corretos</small></article>
+        <article class="card metric"><span>ERROS</span><strong id="metric-errors">—</strong><small>Resultados incorretos</small></article>
+        <article class="card metric"><span>TAXA DE ACERTO</span><strong id="metric-accuracy">—</strong><small>Acertos ÷ tentativas, sem média de percentuais</small></article>
+      </div>
+      <section class="card analysis-card" aria-labelledby="analysis-chart-title"><div class="roster-heading"><div><span class="card-index">01 / EVOLUÇÃO</span><h2 id="analysis-chart-title">Resultados por sessão</h2></div><span class="chart-legend"><i class="correct-dot"></i> Acertos <i class="error-dot"></i> Erros</span></div><div id="analysis-chart" class="session-chart"></div><p class="section-note">Até oito sessões recentes. Contagens registradas, sem classificação de desempenho.</p></section>
+      <section class="card analysis-card" aria-labelledby="sessions-title"><div class="roster-heading"><div><span class="card-index">02 / HISTÓRICO</span><h2 id="sessions-title">Sessões do participante</h2></div><span id="sessions-count" class="small-badge">—</span></div><div class="table-scroll"><table><caption class="sr-only">Sessões, métricas e versão da aplicação</caption><thead><tr><th scope="col">INÍCIO / SESSÃO</th><th scope="col">ESTADO</th><th scope="col">DURAÇÃO</th><th scope="col">TENTATIVAS</th><th scope="col">ACERTOS</th><th scope="col">ERROS</th><th scope="col">TAXA</th><th scope="col">ANÁLISE</th></tr></thead><tbody id="session-rows"></tbody></table></div><p id="sessions-empty" class="section-note">Escolha uma origem para consultar as sessões.</p><div class="pagination"><button id="sessions-prev" class="secondary" type="button">Anterior</button><span id="sessions-page"></span><button id="sessions-next" class="secondary" type="button">Próxima</button></div></section>
+      <section id="session-detail" class="card analysis-card" hidden aria-labelledby="detail-title"><div class="roster-heading"><div><span class="card-index">03 / EXPLORAR SESSÃO</span><h2 id="detail-title">Atividades e eventos</h2><code id="detail-code"></code></div><button id="detail-close" class="secondary" type="button">Fechar detalhes</button></div><p id="detail-message" class="analysis-notice" role="status" aria-live="polite"></p><dl id="detail-attributes" class="attributes"></dl>
+        <div class="subsection"><h3>Resultados por atividade</h3><p>Calculados a partir dos eventos de acerto e erro desta sessão.</p><div class="table-scroll"><table><thead><tr><th scope="col">ATIVIDADE</th><th scope="col">TENTATIVAS</th><th scope="col">ACERTOS</th><th scope="col">ERROS</th><th scope="col">TAXA</th></tr></thead><tbody id="task-rows"></tbody></table></div><p id="tasks-empty" class="section-note">Nenhum evento de avaliação por atividade disponível.</p></div>
+        <div class="subsection"><h3>Headset e controles</h3><p id="sample-summary"></p><p class="section-note">Headset representa pose da cabeça; não é rastreamento ocular. Rastreio dos controles é a proporção das amostras marcadas como rastreadas.</p></div>
+        <div class="subsection"><h3>Eventos registrados</h3><label for="event-search">Filtrar por tipo, objeto ou descrição</label><input id="event-search" type="search" placeholder="Ex.: task_error, R1, R2"><div class="table-scroll"><table><thead><tr><th scope="col">TEMPO NA SESSÃO</th><th scope="col">EVENTO</th><th scope="col">ATIVIDADE / OBJETO</th><th scope="col">DESCRIÇÃO</th></tr></thead><tbody id="event-rows"></tbody></table></div><p id="events-empty" class="section-note">Nenhum evento disponível.</p><div class="pagination"><button id="events-prev" class="secondary" type="button">Anterior</button><span id="events-page"></span><button id="events-next" class="secondary" type="button">Próxima</button></div></div>
+        <div class="subsection"><h3>Arquivos de telemetria registrados</h3><ul id="file-list" class="file-list"></ul><p id="files-empty" class="section-note">Nenhum arquivo indexado no Supabase para esta sessão.</p></div>
+        <div id="storage-preview" class="subsection" hidden><div class="roster-heading"><h3 id="storage-preview-title">Prévia do CSV</h3><button id="storage-preview-close" class="secondary" type="button">Fechar prévia</button></div><p id="storage-preview-summary" class="section-note"></p><div class="table-scroll"><table><thead id="storage-preview-head"></thead><tbody id="storage-preview-rows"></tbody></table></div></div>
+      </section>
+      <footer class="page-footer"><span>Participante, sessões e eventos vinculados por UUID.</span><span id="analysis-timezone"></span></footer>
+    </section>
+  </main>
+</body>
+</html>

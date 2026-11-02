@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72326935b2536704182b67d13dce8e2c, type: 3}
+  m_Name: FaseLED2_5
+  m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
+  name: colocar led azul
+  description: Coloque o LED Azul no lugar correto (verifique a polaridade)
+  dependencies:
+  - {fileID: 11400000, guid: 439facd20f7f072499ec7be8b03a0927, type: 2}

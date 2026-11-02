@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fee051452ebdfdd4cb4e352a3f515fcb, type: 3}
+  m_Name: 03_FaseLedBotao_2
+  m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Quest
+  questTitle: Objetivo da Fase LED com Botao
+  tasks:
+  - {fileID: 11400000, guid: 439facd20f7f072499ec7be8b03a0927, type: 2}
+  - {fileID: 11400000, guid: 8d6f9b67dba1a1a43a021d45298f7dce, type: 2}
+  - {fileID: 11400000, guid: 2e0eee0b9e51b684289c18c289a034fc, type: 2}
+  - {fileID: 11400000, guid: 4ceb9fda8bc71dc43966e8efbe52c83f, type: 2}
+  - {fileID: 11400000, guid: b07291d94c3340d40a0775cf67a2e214, type: 2}
+  - {fileID: 11400000, guid: 0db138bb3ac230346ac968f5e020d5f6, type: 2}
+  - {fileID: 11400000, guid: ae8d132ef9d647e469ba82930dfcc997, type: 2}
+  - {fileID: 11400000, guid: 0b586a69af4db8c4586ee29dd5775bc4, type: 2}
+  - {fileID: 11400000, guid: fe1facf1dcdd17b4d8b18515c70b7580, type: 2}
+  - {fileID: 11400000, guid: 042586dd8db58a1409dd14be76bce600, type: 2}

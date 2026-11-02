@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5409456001580317594
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2231883874532883399}
+  - component: {fileID: 5458425233782327901}
+  m_Layer: 0
+  m_Name: InicioRobo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2231883874532883399
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5409456001580317594}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5.13135, y: 3.54502, z: -9.11212}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5458425233782327901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5409456001580317594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e230b795d3211a54d94093611e43535e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainProjeto.Robot.Scripts.SequentialRobotNarrative
+  falas:
+  - {fileID: 11400000, guid: 5edbaef8fbb1ea140b96dc6f7bdb6ab6, type: 2}
+  - {fileID: 11400000, guid: 2353d266a78ba6a41b77477da7de5ec6, type: 2}
+  - {fileID: 11400000, guid: 6afb7311e8446b34f91bd4372b04c17a, type: 2}
+  - {fileID: 11400000, guid: c7f468c3ca0d0744fba28df73b8939ee, type: 2}
+  tempoEntreFalas: 20
+  tarefaOuvirRobo: {fileID: 11400000, guid: 47f90e3f0da0362489992c689afd875d, type: 2}

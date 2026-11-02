@@ -1,0 +1,6 @@
+{
+  "name": "circuitos-vr-participantes",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --preserve-symlinks-main --preserve-symlinks --test tests/client.test.mjs tests/static.test.mjs tests/telemetry.test.mjs tests/analysis-ui.test.mjs tests/worker.test.mjs tests/server.test.mjs tests/storage.test.mjs tests/admin.test.mjs" }
+}

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72326935b2536704182b67d13dce8e2c, type: 3}
+  m_Name: FaseDV_1 4
+  m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
+  name: "apertar bot\xE3o"
+  description: "Aperte o bot\xE3o ao lado do monitor para seguir para pr\xF3xima
+    fase"
+  dependencies:
+  - {fileID: 11400000, guid: 40bca69161ac64641aeca1561b5fa35b, type: 2}

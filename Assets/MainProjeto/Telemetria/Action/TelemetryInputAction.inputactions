@@ -1,0 +1,34 @@
+{
+    "name": "TelemetryInputAction",
+    "maps": [
+        {
+            "name": "Telemetry",
+            "id": "6e89cbdb-dd7b-4409-933e-9d86800663f0",
+            "actions": [
+                {
+                    "name": "ToggleSession",
+                    "type": "Button",
+                    "id": "b73c24ec-1e6d-4079-b33e-939f3576e05b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "e832e1fe-e406-4459-8e82-23b1b9498c22",
+                    "path": "<XRController>{LeftHand}/{PrimaryButton}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleSession",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
