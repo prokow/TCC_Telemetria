@@ -20,6 +20,7 @@ namespace MainProjeto.Telemetria
 
         private void OnEnable()
         {
+            if (sessionManager != null) sessionManager.StatusChanged += UpdateStatus;
             if (toggleSessionAction != null && toggleSessionAction.action != null &&
                 !toggleSessionAction.action.enabled)
             {
@@ -29,6 +30,7 @@ namespace MainProjeto.Telemetria
         }
         private void OnDisable()
         {
+            if (sessionManager != null) sessionManager.StatusChanged -= UpdateStatus;
             if (enabledActionHere && toggleSessionAction != null && toggleSessionAction.action != null)
                 toggleSessionAction.action.Disable();
             enabledActionHere = false;
@@ -42,26 +44,29 @@ namespace MainProjeto.Telemetria
             if (fromAction || fromKeyboard) ToggleSession();
         }
 
-        public void ToggleSession()
+        public async void ToggleSession()
         {
             if (sessionManager == null)
             {
                 Debug.LogError("[TelemetrySessionInput] Referência do TelemetrySessionManager ausente.");
                 return;
             }
+            if (sessionManager.IsSaving) return;
             double now = Time.realtimeSinceStartupAsDouble;
             if (now - lastToggleRealtime < minToggleInterval) return;
             lastToggleRealtime = now;
 
             if (sessionManager.IsRecording)
             {
-                bool saved = sessionManager.EndSession();
+                bool saved = await sessionManager.EndSessionAsync();
+                if (this == null) return;
                 Show(saved ? "Telemetria encerrada e salva." : "Falha ao salvar: tente novamente.",
                     saved ? stoppedClip : null);
             }
             else if (sessionManager.HasPendingSave)
             {
-                bool saved = sessionManager.RetryPendingSave();
+                bool saved = await sessionManager.RetryPendingSaveAsync();
+                if (this == null) return;
                 Show(saved ? "Dados pendentes salvos." : "Ainda não foi possível salvar.", null);
             }
             else
@@ -72,6 +77,7 @@ namespace MainProjeto.Telemetria
             }
         }
 
+        private void UpdateStatus(string message) { if (statusText != null) statusText.text = message; }
         private void Show(string message, AudioClip sound)
         {
             if (statusText != null) statusText.text = message;

@@ -21367,22 +21367,22 @@ MonoBehaviour:
       m_Calls: []
   debugMode: 0
   sequenceOfQuests:
-  - {fileID: 11400000, guid: ea49e6b7c0a4f6941b4c32ae9f7f49a5, type: 2}
   - {fileID: 11400000, guid: b6dde8bd2dba18c48b5772f97f908b5c, type: 2}
   - {fileID: 11400000, guid: 12c4bc1ba56dc8b479d7175ff2ce8efb, type: 2}
   - {fileID: 11400000, guid: ff7b46a21c488ac408eb8068eabab2ac, type: 2}
   - {fileID: 11400000, guid: be5768b91ab43944ba5a6623256b0985, type: 2}
   - {fileID: 11400000, guid: 3515cd8132757454babbfae9d2ce8dc9, type: 2}
+  - {fileID: 11400000, guid: ea49e6b7c0a4f6941b4c32ae9f7f49a5, type: 2}
   - {fileID: 11400000, guid: 55b386455826dbd478f4e0d726b6edf9, type: 2}
   fadeScreen: {fileID: 1304935361}
   fadeDuration: 2
   sceneCircuits:
-  - {fileID: 1719691418}
   - {fileID: 2088299201}
   - {fileID: 4864687069672017190}
   - {fileID: 5634620460522352100}
   - {fileID: 6153298321464429274}
   - {fileID: 241179338918171442}
+  - {fileID: 1719691418}
   - {fileID: 1596122266}
 --- !u!4 &1836445052
 Transform:

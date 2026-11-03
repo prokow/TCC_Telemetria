@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 using MainProjeto.Telemetria.Sessions;
 using UnityEngine;
 
@@ -11,213 +12,245 @@ namespace MainProjeto.Telemetria
         [Header("Gravadores")]
         [SerializeField] private TelemetryHeadRecorder headRecorder;
         [SerializeField] private TelemetryControllerRecorder controllerRecorder;
-        [Tooltip("Encerrar ao suspender o app. Desativado para continuar a mesma sessão até a última quest.")]
         [SerializeField] private bool finishOnApplicationPause;
-        // Identificação criada automaticamente: não exige campo de nome na VR.
-        // O GUID completo identifica o participante; Jogador-XXXXXXXX é um apelido visual.
-        private string participantCode = string.Empty;
-        private string participantDisplayName = string.Empty;
-
+        [Header("Gravacao local")]
+        [Range(1f, 30f)] [SerializeField] private float checkpointIntervalSeconds = 15f;
+        private string participantCode = string.Empty, participantDisplayName = string.Empty;
         private bool recording;
-        private double startRealtime;
+        private double startRealtime, nextCheckpoint;
         private DateTime startedUtc;
-        private string currentSessionId;
-        private readonly List<TelemetryEventFrame> events = new List<TelemetryEventFrame>();
-        private int attempts, correctAnswers, errors;
-        private TelemetrySessionPayload pendingPayload; // retém dados se falhar o salvamento
-        private string collectorUserId, collectionProjectOrigin;
+        private string currentSessionId, collectorUserId, collectionProjectOrigin, applicationVersion;
+        private List<TelemetryEventFrame> events = new List<TelemetryEventFrame>();
+        private int attempts, correctAnswers, errors, eventCount;
+        private TelemetrySessionWriter writer;
+        private TelemetrySessionPayload pendingBatch, finalMetadata;
+        private Task<bool> checkpointTask, finalSaveTask;
+        public bool IsRecording => recording;
+        public bool IsSaving => finalSaveTask != null && !finalSaveTask.IsCompleted;
+        public bool HasPendingSave => !recording && writer != null;
+        public string ParticipantCode => participantCode;
+        public string ParticipantDisplayName => participantDisplayName;
+        public string CurrentSessionId => currentSessionId;
+        public string LastStatus { get; private set; }
+        public string StopReason { get; private set; }
+        public event Action<string> StatusChanged;
 
-        public bool IsRecording { get { return recording; } }
-        public string ParticipantCode { get { return participantCode; } }
-        public string ParticipantDisplayName { get { return participantDisplayName; } }
-
-        // Novo participante anônimo por execução do TelemetrySessionManager.
-        // Para mais de uma pessoa no mesmo headset, use NewParticipantForNextSession()
-        // ENTRE sessões. O código real é o GUID inteiro; o apelido é apenas visual.
         private void Awake()
         {
             var selected = ApplicationSessionContext.Instance?.Participants.Selected;
             if (selected != null) ConfigureParticipant(selected.ParticipantCode, selected.DisplayName);
             else if (ApplicationSessionContext.Instance == null) GenerateNewParticipant();
         }
-
+        private async void Start()
+        {
+            try
+            {
+                var messages = await TelemetryLocalStorage.RecoverAsync(TelemetryLocalStorage.Root);
+                if (this == null) return;
+                foreach (string message in messages) Debug.Log("[Telemetry] " + message);
+                Upload.TelemetrySyncController.NotifyLocalSave();
+            }
+            catch (Exception ex) { if (this != null) Debug.LogWarning("[Telemetry] Recuperacao pendente: " + ex.Message); }
+        }
+        private void SetStatus(string message)
+        {
+            LastStatus = message;
+            if (this == null) return;
+            Debug.Log("[Telemetry] " + message);
+            StatusChanged?.Invoke(message);
+        }
         public bool GenerateNewParticipant()
         {
-            if (recording || pendingPayload != null)
-            {
-                Debug.LogWarning("[TelemetrySessionManager] Encerre e salve a sessão antes de trocar de participante.");
-                return false;
-            }
-
-            string id = Guid.NewGuid().ToString("N");
-            participantCode = id;
-            participantDisplayName = "Jogador-" + id.Substring(0, 8).ToUpperInvariant();
-            Debug.Log("[TelemetrySessionManager] Participante anônimo: " + participantDisplayName);
+            if (recording || writer != null) return false;
+            participantCode = Guid.NewGuid().ToString("N");
+            participantDisplayName = "Jogador-" + participantCode.Substring(0, 8).ToUpperInvariant();
             return true;
         }
-
-        // Método void pode ser usado em um Button.OnClick() ou chamado por script.
-        public void NewParticipantForNextSession()
-        {
-            GenerateNewParticipant();
-        }
-
-        // Identifica o participante antes do início de uma sessão.
-        // O código deve ser único; o nome de exibição é opcional.
+        public void NewParticipantForNextSession() => GenerateNewParticipant();
         public bool ConfigureParticipant(string code, string displayName)
         {
-            if (recording || pendingPayload != null)
-            {
-                Debug.LogWarning("[TelemetrySessionManager] Identifique o participante antes de iniciar a sessão.");
-                return false;
-            }
-            if (!Upload.TelemetryUploadPackage.ValidCode(code))
-            {
-                Debug.LogWarning("[TelemetrySessionManager] Código do participante não pode estar vazio.");
-                return false;
-            }
-            participantCode = code.Trim();
-            participantDisplayName = (displayName ?? string.Empty).Trim();
+            if (recording || writer != null || !Upload.TelemetryUploadPackage.ValidCode(code)) return false;
+            participantCode = code.Trim(); participantDisplayName = (displayName ?? string.Empty).Trim();
             return true;
         }
-        public string CurrentSessionId { get { return currentSessionId; } }
-        public bool HasPendingSave { get { return pendingPayload != null; } }
-
         public bool BeginSession()
         {
-            // O fluxo do menu sempre exige a identidade selecionada; abrir a cena isoladamente
-            // mantém o modo de teste anônimo existente.
+            if (recording || writer != null || IsSaving) return false;
             var context = ApplicationSessionContext.Instance;
             if (context != null)
             {
                 var selected = context.Participants.Selected;
-                if (selected == null || !ConfigureParticipant(selected.ParticipantCode, selected.DisplayName) ||
-                    !context.TryPrepareSession()) return false;
+                if (selected == null || !ConfigureParticipant(selected.ParticipantCode, selected.DisplayName) || !context.TryPrepareSession()) return false;
             }
-            // Segurança extra: garante código e nome mesmo após alteração do ciclo de vida.
-            if (string.IsNullOrEmpty(participantCode))
-                GenerateNewParticipant();
-
-            if (recording || pendingPayload != null)
-            {
-                Debug.LogWarning("[TelemetrySessionManager] Gravação ativa ou salvamento pendente.");
-                return false;
-            }
-            if (headRecorder == null || controllerRecorder == null ||
-                !headRecorder.CanRecord || !controllerRecorder.CanRecord)
-            {
-                Debug.LogError("[TelemetrySessionManager] Configure os dois gravadores e seus Transforms.");
-                return false;
-            }
-
-            string newId = context != null ? context.Session.SessionId : Guid.NewGuid().ToString("N");
-            double now = Time.realtimeSinceStartupAsDouble;
-            DateTime utcNow = DateTime.UtcNow;
-
-            if (!headRecorder.Begin(now)) return false;
-            if (!controllerRecorder.Begin(now))
-            {
-                headRecorder.End();
-                return false;
-            }
-
-            if (context != null && !context.MarkActive(newId))
-            {
-                headRecorder.End();
-                controllerRecorder.End();
-                return false;
-            }
-
-            currentSessionId = newId;
+            if (string.IsNullOrEmpty(participantCode)) GenerateNewParticipant();
+            if (headRecorder == null || controllerRecorder == null || !headRecorder.CanRecord || !controllerRecorder.CanRecord) return false;
+            currentSessionId = context != null ? context.Session.SessionId : Guid.NewGuid().ToString("N");
+            startRealtime = Time.realtimeSinceStartupAsDouble;
+            if (!headRecorder.Begin(startRealtime)) return false;
+            if (!controllerRecorder.Begin(startRealtime)) { headRecorder.End(); return false; }
+            if (context != null && !context.MarkActive(currentSessionId)) { headRecorder.End(); controllerRecorder.End(); return false; }
+            writer = new TelemetrySessionWriter(TelemetryLocalStorage.GetSessionFolder(currentSessionId));
             collectorUserId = Upload.TelemetrySyncController.CurrentCollector;
             collectionProjectOrigin = Upload.TelemetrySyncController.CurrentProjectOrigin;
-            startRealtime = now;
-            startedUtc = utcNow;
-            attempts = correctAnswers = errors = 0;
-            events.Clear();
+            applicationVersion = Application.version;
+            startedUtc = DateTime.UtcNow;
+            attempts = correctAnswers = errors = eventCount = 0;
+            events = new List<TelemetryEventFrame>(); pendingBatch = finalMetadata = null;
+            finalSaveTask = null; StopReason = null;
             recording = true;
-            // Se precisar notificar outros sistemas, exponha evento daqui,
-            // mas não deixe o salvamento depender da ordem dos listeners.
-            Debug.Log("[TelemetrySessionManager] Sessão iniciada: " + newId);
+            SetStatus("Telemetria iniciada.");
+            StartCheckpoint(); // persist identity even before the first sample
             return true;
         }
-
-        public bool EndSession()
+        private TelemetrySessionPayload Metadata()
         {
-            if (!recording) return false;
-
-            // Primeiro interrompe ambos; depois cria uma cópia imutável dos dados.
-            headRecorder.End();
-            controllerRecorder.End();
-            recording = false;
-            ApplicationSessionContext.Instance?.MarkPendingLocalSave(currentSessionId);
-            double now = Time.realtimeSinceStartupAsDouble;
-
-            pendingPayload = new TelemetrySessionPayload
-            {
-                SessionId = currentSessionId,
-                ParticipantCode = participantCode,
-                ParticipantDisplayName = participantDisplayName,
-                CollectorUserId = collectorUserId,
-                SupabaseProjectOrigin = collectionProjectOrigin,
-                StartedUtc = startedUtc.ToString("o", CultureInfo.InvariantCulture),
-                EndedUtc = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture),
-                ApplicationVersion = Application.version,
-                DurationSeconds = (float)(now - startRealtime),
-                Attempts = attempts,
-                CorrectAnswers = correctAnswers,
-                Errors = errors,
-                HeadFrames = headRecorder.CopyHistory(),
-                ControllerFrames = controllerRecorder.CopyHistory(),
-                Events = new List<TelemetryEventFrame>(events)
+            return new TelemetrySessionPayload {
+                SessionId = currentSessionId, ParticipantCode = participantCode, ParticipantDisplayName = participantDisplayName,
+                CollectorUserId = collectorUserId, SupabaseProjectOrigin = collectionProjectOrigin,
+                StartedUtc = startedUtc.ToString("o", CultureInfo.InvariantCulture), EndedUtc = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture),
+                ApplicationVersion = applicationVersion, DurationSeconds = (float)(Time.realtimeSinceStartupAsDouble - startRealtime),
+                Attempts = attempts, CorrectAnswers = correctAnswers, Errors = errors
             };
-            return RetryPendingSave();
         }
-
-        public bool RetryPendingSave()
+        private TelemetrySessionPayload TakeBatch()
         {
-            if (pendingPayload == null) return false;
+            var batch = Metadata();
+            batch.HeadFrames = headRecorder.DrainHistory(); batch.ControllerFrames = controllerRecorder.DrainHistory();
+            batch.Events = events; events = new List<TelemetryEventFrame>();
+            return batch;
+        }
+        private async Task<bool> PersistBatchAsync()
+        {
+            if (pendingBatch == null) pendingBatch = TakeBatch();
+            var batch = pendingBatch;
+            var target = writer;
             try
             {
-                TelemetryLocalStorage.Save(pendingPayload);
-                Upload.TelemetrySyncController.NotifyLocalSave();
-                ApplicationSessionContext.Instance?.MarkSavedLocally(pendingPayload.SessionId);
-                Debug.Log("[TelemetrySessionManager] Sessão salva: " + pendingPayload.SessionId);
-                pendingPayload = null;
+                await Task.Run(() => target.Append(batch));
+                pendingBatch = null; batch = null; // samples are durable; release both references
                 return true;
             }
             catch (Exception ex)
             {
-                Debug.LogError("[TelemetrySessionManager] Falha ao salvar. Dados preservados em memória: " + ex);
+                SetStatus("Falha no checkpoint; dados pendentes preservados. " + ex.Message);
                 return false;
             }
         }
-
-        // Ex.: RecordEvent("circuit_error_detected", "R2", "resistor em paralelo")
+        private void StartCheckpoint()
+        {
+            nextCheckpoint = Time.realtimeSinceStartupAsDouble + Mathf.Clamp(checkpointIntervalSeconds, 1f, 30f);
+            checkpointTask = PersistBatchAsync();
+        }
+        private void LateUpdate()
+        {
+            if (!recording) return;
+            if (headRecorder.BufferFull || controllerRecorder.BufferFull || events.Count >= TelemetrySessionWriter.MaxBufferedEvents ||
+                writer.StoredBytes >= TelemetrySessionWriter.StopAtBytes || eventCount >= TelemetrySessionWriter.MaxEvents - 1 ||
+                (checkpointTask != null && checkpointTask.IsCompleted && !checkpointTask.Result))
+            {
+                StopForSafety("Limite de armazenamento ou falha de gravacao; a coleta foi interrompida.");
+                return;
+            }
+            if ((checkpointTask == null || checkpointTask.IsCompleted) &&
+                (Time.realtimeSinceStartupAsDouble >= nextCheckpoint || events.Count >= 64 ||
+                 headRecorder.BufferedCount >= TelemetrySessionWriter.MaxBufferedFrames / 2 ||
+                 controllerRecorder.BufferedCount >= TelemetrySessionWriter.MaxBufferedFrames / 2)) StartCheckpoint();
+        }
+        // For UnityEvent callers: true means finalization started, not that it is already saved.
+        public bool EndSession()
+        {
+            if (!recording) return false;
+            recording = false; headRecorder.End(); controllerRecorder.End();
+            finalMetadata = Metadata();
+            ApplicationSessionContext.Instance?.MarkPendingLocalSave(currentSessionId);
+            SetStatus("Salvando telemetria...");
+            finalSaveTask = FinalizeAsync();
+            return true;
+        }
+        public Task<bool> EndSessionAsync()
+        {
+            if (recording) EndSession();
+            return finalSaveTask ?? Task.FromResult(false);
+        }
+        public bool RetryPendingSave()
+        {
+            if (!HasPendingSave || IsSaving) return false;
+            finalSaveTask = FinalizeAsync(); return true;
+        }
+        public Task<bool> RetryPendingSaveAsync()
+        {
+            RetryPendingSave(); return finalSaveTask ?? Task.FromResult(false);
+        }
+        private async Task<bool> FinalizeAsync()
+        {
+            try
+            {
+                if (checkpointTask != null) await checkpointTask;
+                if (pendingBatch != null && !await PersistBatchAsync()) return false;
+                // Flush everything collected while the previous checkpoint was being written.
+                if (!await PersistBatchAsync()) return false;
+                var target = writer; var metadata = finalMetadata;
+                await Task.Run(() => target.Complete(metadata));
+                target.Dispose(); writer = null;
+                headRecorder.ReleaseHistory(); controllerRecorder.ReleaseHistory(); events = new List<TelemetryEventFrame>();
+                pendingBatch = finalMetadata = null; checkpointTask = null;
+                ApplicationSessionContext.Instance?.MarkSavedLocally(currentSessionId);
+                Upload.TelemetrySyncController.NotifyLocalSave();
+                SetStatus("Telemetria salva no dispositivo." + (string.IsNullOrEmpty(StopReason) ? "" : " " + StopReason));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                SetStatus("Falha ao salvar; checkpoints e dados pendentes preservados. " + ex.Message);
+                return false;
+            }
+        }
+        private void StopForSafety(string reason)
+        {
+            if (!recording) return;
+            StopReason = reason;
+            // One reserved event explains why this session ended before the activity did.
+            if (eventCount < TelemetrySessionWriter.MaxEvents)
+            {
+                events.Add(new TelemetryEventFrame { TimeSinceStart = (float)(Time.realtimeSinceStartupAsDouble - startRealtime), EventType = "collection_stopped", ObjectId = "application", Details = reason });
+                eventCount++;
+            }
+            Debug.LogWarning("[Telemetry] " + reason);
+            EndSession();
+        }
+        private static string Limited(string value, int length) => value == null ? "" : value.Length <= length ? value : value.Substring(0, length);
         public void RecordEvent(string eventType, string objectId, string details = "")
         {
             if (!recording || string.IsNullOrEmpty(eventType)) return;
-            events.Add(new TelemetryEventFrame
+            if (events.Count >= TelemetrySessionWriter.MaxBufferedEvents || eventCount >= TelemetrySessionWriter.MaxEvents - 1)
             {
-                TimeSinceStart = (float)(Time.realtimeSinceStartupAsDouble - startRealtime),
-                EventType = eventType, ObjectId = objectId, Details = details
-            });
+                StopForSafety("Limite de eventos atingido; a coleta foi interrompida."); return;
+            }
+            events.Add(new TelemetryEventFrame { TimeSinceStart = (float)(Time.realtimeSinceStartupAsDouble - startRealtime), EventType = Limited(eventType, 120), ObjectId = Limited(objectId, 200), Details = Limited(details, 4000) });
+            eventCount++;
         }
-
         public void RegisterAttempt(bool wasCorrect, string taskId)
         {
             if (!recording) return;
-            attempts++;
-            if (wasCorrect) correctAnswers++;
-            else errors++;
+            if (events.Count >= TelemetrySessionWriter.MaxBufferedEvents || eventCount >= TelemetrySessionWriter.MaxEvents - 1) { StopForSafety("Limite de eventos atingido; a coleta foi interrompida."); return; }
+            attempts++; if (wasCorrect) correctAnswers++; else errors++;
             RecordEvent(wasCorrect ? "task_correct" : "task_error", taskId);
         }
-
         private void OnApplicationPause(bool paused)
         {
             if (!recording) return;
             RecordEvent(paused ? "application_paused" : "application_resumed", "application");
             if (paused && finishOnApplicationPause) EndSession();
+            else if (paused && recording && (checkpointTask == null || checkpointTask.IsCompleted)) StartCheckpoint();
+        }
+        private void OnApplicationQuit() { if (recording) EndSession(); }
+        private async void OnDestroy()
+        {
+            if (recording) EndSession();
+            var target = writer;
+            if (finalSaveTask != null) await finalSaveTask;
+            // A failed save must not prevent recovery after returning to the menu.
+            target?.Dispose();
         }
     }
 }

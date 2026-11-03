@@ -21,5 +21,5 @@ test('worker le Blob em outra thread e retorna apenas relatorio compacto', async
 test('worker rejeita arquivo de outro participante, JSON invalido e tamanho excessivo', async () => {
   const mismatch = await analyze(new Blob([JSON.stringify(payload)]), id(99)); assert.match(mismatch.error, /outro participante/);
   const invalid = await analyze(new Blob(['not-json-private-fixture']), id(1)); assert.match(invalid.error, /Session.json válido/); assert(!invalid.error.includes('private-fixture'));
-  const large = await analyze({ size: 33 * 1024 * 1024 }, id(1)); assert.match(large.error, /32 MB/);
+  const large = await analyze({ size: 65 * 1024 * 1024 }, id(1)); assert.match(large.error, /64 MB/);
 });

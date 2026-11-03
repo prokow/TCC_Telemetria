@@ -16,6 +16,7 @@ namespace MainProjeto.Telemetria.Upload
         private CancellationTokenSource lifetime;
         private double nextAttempt;
         private bool running;
+        private System.Threading.Tasks.Task recovery;
         public string LastStatus { get; private set; }
         public static string CurrentCollector => sharedAuth?.Current?.UserId;
         public static string CurrentProjectOrigin => authOrigin;
@@ -51,6 +52,7 @@ namespace MainProjeto.Telemetria.Upload
             instance.processor = new TelemetryUploadProcessor(new TelemetryUploadStore(Path.Combine(Application.persistentDataPath, "Sessoes_Pendentes")), authentication, new TelemetryUploadClient(new UnityTelemetryUploadTransport(connection)), connection.RestUrl);
             var controller = instance;
             instance.processor.Status += message => { if (controller != null) { controller.LastStatus = message; Debug.Log("[SupabaseTelemetry] " + message); } };
+            instance.recovery = TelemetryLocalStorage.RecoverAsync(TelemetryLocalStorage.Root);
             instance.nextAttempt = 0;
         }
         public static void NotifyLocalSave() { if (instance != null) instance.nextAttempt = 0; }
@@ -66,7 +68,7 @@ namespace MainProjeto.Telemetria.Upload
             if (processor == null || running || lifetime == null) return;
             running = true; nextAttempt = Time.realtimeSinceStartupAsDouble + 10;
             var token = lifetime.Token;
-            try { await processor.ProcessAsync(token, force); }
+            try { if (recovery != null) { await recovery; recovery = null; } await processor.ProcessAsync(token, force); }
             catch (OperationCanceledException) { }
             catch (Exception) { if (this != null) Debug.LogWarning("[SupabaseTelemetry] Fila indisponivel; nova tentativa sera realizada."); }
             finally { if (this != null) running = false; }

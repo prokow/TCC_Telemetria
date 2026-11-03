@@ -196,7 +196,7 @@ export class AnalysisUI {
   }
   import(file) {
     if (!this.person) return;
-    if (file.size > 32 * 1024 * 1024) { this.notice('Selecione um Session.json de até 32 MB.'); return; }
+    if (file.size > 64 * 1024 * 1024) { this.notice('Selecione um Session.json de até 64 MB.'); return; }
     this.importWorker?.terminate(); this.importWorker = null; $('analysis-file').disabled = false; let worker;
     try { worker = this.workerFactory(); }
     catch { this.notice('Não foi possível abrir a análise de arquivo neste navegador. Tente novamente em um navegador atualizado.'); return; }

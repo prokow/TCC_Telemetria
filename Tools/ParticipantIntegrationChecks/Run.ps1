@@ -47,6 +47,9 @@ $sourceFiles = @(
     'Assets/MainProjeto/Telemetria/Telemetry/Data/ControllerTelemetryFrame.cs',
     'Assets/MainProjeto/Telemetria/Telemetry/Data/TelemetryEventFrame.cs',
     'Assets/MainProjeto/Telemetria/Telemetry/Persistence/TelemetryLocalStorage.cs',
+    'Assets/MainProjeto/Telemetria/Telemetry/Persistence/TelemetryJsonStream.cs',
+    'Assets/MainProjeto/Telemetria/Telemetry/Persistence/TelemetrySessionWriter.cs',
+    'Assets/MainProjeto/Telemetria/Telemetry/Input/TelemetrySessionInput.cs',
     'Assets/MainProjeto/Core/Scripts/Model/QuestCompletionProgress.cs',
     'Assets/MainProjeto/Core/Scripts/Model/QuestAdvanceRules.cs',
     'Assets/MainProjeto/Core/Scripts/Model/QuestSystemModel.cs',
@@ -57,7 +60,8 @@ $sourceFiles = @(
     'Assets/MainProjeto/UI/Scripts/SessionMetricsManager.cs',
     'Assets/MainProjeto/Telemetria/Telemetry/Core/AutoTelemetrySession.cs',
     'Tools/ParticipantIntegrationChecks/Program.cs',
-    'Tools/ParticipantIntegrationChecks/TelemetryUploadChecks.cs'
+    'Tools/ParticipantIntegrationChecks/TelemetryUploadChecks.cs',
+    'Tools/ParticipantIntegrationChecks/TelemetryPersistenceChecks.cs'
 )
 $compileItems = foreach ($relativePath in $sourceFiles) {
     '<Compile Include="' + [Security.SecurityElement]::Escape((Join-Path $workspacePath $relativePath)) + '" />'
@@ -72,6 +76,7 @@ $referencePaths = @(
     (Join-Path $enginePath 'UnityEngine.JSONSerializeModule.dll'),
     (Join-Path $enginePath 'UnityEngine.AnimationModule.dll'),
     (Join-Path $enginePath 'UnityEngine.PhysicsModule.dll'),
+    (Join-Path $enginePath 'UnityEngine.AudioModule.dll'),
     (Join-Path $workspacePath 'Library/ScriptAssemblies/Unity.XR.Interaction.Toolkit.dll'),
     (Join-Path $workspacePath 'Library/ScriptAssemblies/UnityEngine.UI.dll'),
     (Join-Path $workspacePath 'Library/ScriptAssemblies/Unity.TextMeshPro.dll'),

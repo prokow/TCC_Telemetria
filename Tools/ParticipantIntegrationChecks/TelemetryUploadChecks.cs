@@ -23,13 +23,13 @@ internal static class TelemetryUploadChecks
         var setup = Fixture(); var package = TelemetryUploadPackage.Build(setup.store.Folder(setup.payload.SessionId), Owner);
         Check(package.Files.Count == 4, "quatro arquivos canonicos");
         Check(package.Files.All(file => file.StoragePath.StartsWith(Owner + "/" + Participant + "/" + package.SessionId + "/")), "todos os caminhos vinculam operador, participante e sessao");
-        Check(package.Files.All(file => file.Sha256 == TelemetryUploadPackage.Hash(file.Bytes)), "SHA de cada arquivo");
-        Check(package.Files.Where(file => file.Name.EndsWith(".csv")).All(file => Encoding.UTF8.GetString(file.Bytes).StartsWith("ParticipantCode,SessionId,")), "UUIDs em todos os CSVs");
-        var headValues = Encoding.UTF8.GetString(package.Files.Single(file => file.Name == "Head.csv").Bytes).Split('\n')[1].Split(',');
-        var controllerValues = Encoding.UTF8.GetString(package.Files.Single(file => file.Name == "Controllers.csv").Bytes).Split('\n')[1].Split(',');
+        Check(package.Files.All(file => file.Sha256 == TelemetryUploadPackage.HashFile(file.FilePath)), "SHA de cada arquivo");
+        Check(package.Files.Where(file => file.Name.EndsWith(".csv")).All(file => File.ReadAllText(file.FilePath).StartsWith("ParticipantCode,SessionId,")), "UUIDs em todos os CSVs");
+        var headValues = File.ReadAllText(package.Files.Single(file => file.Name == "Head.csv").FilePath).Split('\n')[1].Split(',');
+        var controllerValues = File.ReadAllText(package.Files.Single(file => file.Name == "Controllers.csv").FilePath).Split('\n')[1].Split(',');
         Check(headValues.Length == 9 && headValues[3] == "-1" && headValues[7] == "70", "posicao e rotacao reais do headset presentes no Head.csv");
         Check(controllerValues.Length == 21 && controllerValues[4] == "2.5" && controllerValues[15] == "-3" && controllerValues[20] == "0.75", "posicao de cada controle e analogico presentes no Controllers.csv");
-        Check(Encoding.UTF8.GetString(package.Files.Single(file => file.Name == "Events.csv").Bytes).Contains("'=fixture"), "formulas neutralizadas apenas em campos de texto");
+        Check(File.ReadAllText(package.Files.Single(file => file.Name == "Events.csv").FilePath).Contains("'=fixture"), "formulas neutralizadas apenas em campos de texto");
         Check((int)package.Summary["sample_counts"]["left_tracked"] == 1 && (int)package.Summary["sample_counts"]["right_tracked"] == 0, "contagens reais de rastreio");
         Check(package.Digest == TelemetryUploadPackage.Build(setup.store.Folder(setup.payload.SessionId), Owner).Digest, "reenvio gera o mesmo digest");
         await Throws<TelemetryUploadException>(() => Task.Run(() => TelemetryUploadPackage.Build(setup.store.Folder(setup.payload.SessionId), "invalid")));
@@ -126,7 +126,7 @@ internal static class TelemetryUploadChecks
 
         // Arquivos reais produzidos pelo C# para o teste de interoperabilidade do Worker web.
         string interoperability = Path.GetFullPath("Temp/TelemetryUploadInterop"); Directory.CreateDirectory(interoperability);
-        foreach (var file in package.Files) File.WriteAllBytes(Path.Combine(interoperability, file.Name), file.Bytes);
+        foreach (var file in package.Files) File.Copy(file.FilePath, Path.Combine(interoperability, file.Name), true);
         File.WriteAllText(Path.Combine(interoperability, "Metadata.json"), package.RequestBody.ToString());
         return checks;
     }
@@ -183,7 +183,14 @@ internal static class TelemetryUploadChecks
         public TaskCompletionSource<TelemetryHttpResponse> BlockCommit;
         public CancellationTokenSource CancelUpload;
         public TelemetryHttpResponse LastAck;
-        public Task<TelemetryHttpResponse> SendAsync(string method, string path, string token, byte[] body, string type, CancellationToken cancellationToken)
+        public Task<TelemetryHttpResponse> SendFileAsync(string path, string token, string filePath, string type, CancellationToken cancellationToken)
+            => SendAsync("POST", path, token, File.ReadAllBytes(filePath), type, cancellationToken);
+        public async Task<TelemetryHttpResponse> DownloadHashAsync(string path, string token, string temporaryPath, CancellationToken cancellationToken)
+        {
+            var result = await SendAsync("GET", path, token, null, null, cancellationToken);
+            result.Sha256 = TelemetryUploadPackage.Hash(result.Bytes);
+            return result;
+        }        public Task<TelemetryHttpResponse> SendAsync(string method, string path, string token, byte[] body, string type, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested(); Calls++; Tokens.Add(token);
             if (FirstUnauthorized) { FirstUnauthorized = false; return Task.FromResult(TelemetryHttpResponse.Json(401, "{}")); }

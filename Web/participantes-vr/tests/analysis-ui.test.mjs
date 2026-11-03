@@ -102,7 +102,7 @@ test('resposta remota atrasada nao sobrescreve aviso de analise local', async t 
 
 test('limites e erro de importacao preservam a analise existente', async t => {
   const { ui, get, workers } = fixture(t); ui.open(person(1)); await settle();
-  ui.import({ size: 33 * 1024 * 1024 }); assert.equal(workers.length, 0); assert.match(get('analysis-message').textContent, /32 MB/);
+  ui.import({ size: 65 * 1024 * 1024 }); assert.equal(workers.length, 0); assert.match(get('analysis-message').textContent, /64 MB/);
   ui.import({ size: 100 }); workers[0].onmessage({ data: { error: 'Esse arquivo pertence a outro participante.' } });
   assert.match(get('analysis-message').textContent, /outro participante/); assert.equal(ui.source, 'supabase'); assert.equal(get('analysis-file').disabled, false);
 });

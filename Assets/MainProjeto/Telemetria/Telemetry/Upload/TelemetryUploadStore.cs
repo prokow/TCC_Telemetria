@@ -48,11 +48,24 @@ namespace MainProjeto.Telemetria.Upload
         {
             string temporary = path + ".tmp";
             File.WriteAllText(temporary, content, new UTF8Encoding(false));
+            CommitTemporary(temporary, path);
+        }
+        public static void CommitTemporary(string temporary, string path)
+        {
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
                 // ReplaceFile pode falhar ao copiar metadados/ACLs no Windows.
                 // MoveFileEx troca o nome atomicamente no mesmo diretorio, sem etapa de exclusao.
-                if (!MoveFileEx(temporary, path, 1 | 8)) throw new Win32Exception(Marshal.GetLastWin32Error(), "Nao foi possivel atualizar o manifesto local.");
+                // Antivirus/indexers can briefly hold the old file during replacement.
+                // This runs on the persistence worker; never delete the last valid file first.
+                for (int attempt = 0; ; attempt++)
+                {
+                    if (MoveFileEx(temporary, path, 1 | 8)) break;
+                    int error = Marshal.GetLastWin32Error();
+                    if (attempt >= 4 || (error != 5 && error != 32 && error != 33))
+                        throw new Win32Exception(error, "Nao foi possivel atualizar o manifesto local.");
+                    System.Threading.Thread.Sleep(20 << attempt);
+                }
             }
             else if (File.Exists(path)) File.Replace(temporary, path, null);
             else File.Move(temporary, path);

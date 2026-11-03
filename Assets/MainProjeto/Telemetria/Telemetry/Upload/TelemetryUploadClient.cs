@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,18 +13,21 @@ namespace MainProjeto.Telemetria.Upload
     {
         public long Status;
         public byte[] Bytes;
+        public string Sha256;
         public TelemetryHttpResponse(long status, byte[] bytes) { Status = status; Bytes = bytes ?? Array.Empty<byte>(); }
         public static TelemetryHttpResponse Json(long status, string text) => new TelemetryHttpResponse(status, Encoding.UTF8.GetBytes(text));
     }
     public interface ITelemetryUploadTransport
     {
         Task<TelemetryHttpResponse> SendAsync(string method, string path, string accessToken, byte[] body, string contentType, CancellationToken cancellationToken);
+        Task<TelemetryHttpResponse> SendFileAsync(string path, string accessToken, string filePath, string contentType, CancellationToken cancellationToken);
+        Task<TelemetryHttpResponse> DownloadHashAsync(string path, string accessToken, string temporaryPath, CancellationToken cancellationToken);
     }
     public sealed class TelemetryUploadClient
     {
         private readonly ITelemetryUploadTransport transport;
         public TelemetryUploadClient(ITelemetryUploadTransport transport) => this.transport = transport;
-        public async Task UploadAsync(TelemetryUploadPackage package, string accessToken, Action<int> progress, CancellationToken cancellationToken)
+        public async Task UploadAsync(TelemetryUploadPackage package, string accessToken, Func<int, Task> progress, CancellationToken cancellationToken)
         {
             var checkBody = Encoding.UTF8.GetBytes(new JObject { ["p_participant_code"] = package.ParticipantCode }.ToString(Formatting.None));
             var check = await transport.SendAsync("POST", "/rest/v1/rpc/participant_telemetry_access", accessToken, checkBody, "application/json", cancellationToken);
@@ -34,7 +38,9 @@ namespace MainProjeto.Telemetria.Upload
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 string path = "/storage/v1/object/vr-telemetry/" + string.Join("/", file.StoragePath.Split('/').Select(Uri.EscapeDataString));
-                var result = await transport.SendAsync("POST", path, accessToken, file.Bytes, file.ContentType, cancellationToken);
+                bool unchanged = await Task.Run(() => new FileInfo(file.FilePath).Length == file.ByteSize && TelemetryUploadPackage.HashFile(file.FilePath) == file.Sha256, cancellationToken);
+                if (!unchanged) throw new TelemetryUploadException(TelemetryUploadFailure.Conflict, "Arquivo local mudou durante o envio.");
+                var result = await transport.SendFileAsync(path, accessToken, file.FilePath, file.ContentType, cancellationToken);
                 if (result == null) EnsureSuccess(null);
                 bool exists = false;
                 if (result.Status == 400 || result.Status == 409)
@@ -44,13 +50,14 @@ namespace MainProjeto.Telemetria.Upload
                 }
                 if (exists)
                 {
-                    var existing = await transport.SendAsync("GET", path.Replace("/object/vr-telemetry/", "/object/authenticated/vr-telemetry/"), accessToken, null, null, cancellationToken);
+                    var existing = await transport.DownloadHashAsync(path.Replace("/object/vr-telemetry/", "/object/authenticated/vr-telemetry/"), accessToken, Path.Combine(Path.GetDirectoryName(file.FilePath), ".verify-" + Guid.NewGuid().ToString("N")), cancellationToken);
                     EnsureSuccess(existing);
-                    if (TelemetryUploadPackage.Hash(existing.Bytes) != file.Sha256) throw new TelemetryUploadException(TelemetryUploadFailure.Conflict, "Ja existe outro conteudo para este UUID no Storage. Nenhum arquivo foi sobrescrito.");
+                    if (existing.Sha256 != file.Sha256) throw new TelemetryUploadException(TelemetryUploadFailure.Conflict, "Ja existe outro conteudo para este UUID no Storage. Nenhum arquivo foi sobrescrito.");
                 }
                 else EnsureSuccess(result);
                 cancellationToken.ThrowIfCancellationRequested();
-                progress?.Invoke(++confirmed);
+                confirmed++;
+                if (progress != null) await progress(confirmed);
             }
             var response = await transport.SendAsync("POST", "/rest/v1/rpc/ingest_telemetry_session", accessToken, Encoding.UTF8.GetBytes(package.RequestBody.ToString(Formatting.None)), "application/json", cancellationToken);
             EnsureSuccess(response);

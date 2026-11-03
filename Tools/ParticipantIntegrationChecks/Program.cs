@@ -32,6 +32,7 @@ internal static class Program
         await CheckFailuresAndCancellation();
         await CheckIndependentRosterSync();
         assertions += await TelemetryUploadChecks.Run();
+        assertions += TelemetryPersistenceChecks.Run();
         Console.WriteLine("PASS: " + assertions + " verificações; fontes reais compiladas com bibliotecas do Unity.");
     }
 

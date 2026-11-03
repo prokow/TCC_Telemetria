@@ -96,21 +96,18 @@ public class AutoTelemetrySession : MonoBehaviour
     }
 
     // Chamar quando o jogador terminar todas as fases.
-    public void FinishSession()
+    public async void FinishSession()
     {
         if (sessionManager == null ||
             !sessionManager.IsRecording)
             return;
 
-        bool saved = sessionManager.EndSession();
+        bool saved = await sessionManager.EndSessionAsync();
 
         Debug.Log(saved
             ? "[AutoTelemetrySession] Sessão finalizada e salva."
             : "[AutoTelemetrySession] Falha ao salvar a sessão.");
     }
 
-    private void OnApplicationQuit()
-    {
-        FinishSession();
-    }
+
 }

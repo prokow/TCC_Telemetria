@@ -20,10 +20,10 @@ foreach ($folder in @('Participants','Sessions')) {
 foreach ($name in @('SupabaseConnection','SupabaseConnectionSettings','ISupabaseReadClient','SupabaseService','SupabaseAuthService','SupabaseAuthSession','WindowsSupabaseSessionStore','RememberedOperatorLogin','SharedSupabaseSession')) {
     Copy-FixtureFile ('Assets/MainProjeto/Telemetria/Supabase/' + $name + '.cs')
 }
-foreach ($folder in @('Data','Upload')) {
+foreach ($folder in @('Data','Upload','Persistence')) {
     Get-ChildItem -LiteralPath (Join-Path $workspacePath ('Assets/MainProjeto/Telemetria/Telemetry/' + $folder)) -Filter '*.cs' | ForEach-Object { Copy-FixtureFile ('Assets/MainProjeto/Telemetria/Telemetry/' + $folder + '/' + $_.Name) }
 }
-Copy-FixtureFile 'Assets/MainProjeto/Telemetria/Telemetry/Persistence/TelemetryCsvEncoder.cs'
+
 foreach ($relative in @('Assets/Scenes/MainMenu.unity','Assets/MainProjeto/MenuPrincipal/Editor/MenuCanvasFlowChecks.cs','Assets/MainProjeto/Telemetria/Supabase/Settings/MenuSupabaseConnection.asset','ProjectSettings/ProjectVersion.txt')) { Copy-FixtureFile $relative }
 
 # Nunca copiar as credenciais que o responsavel possa ter preenchido no codigo.

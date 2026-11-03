@@ -17,7 +17,11 @@ namespace MainProjeto.Telemetria
         [Header("Amostragem")]
         [Min(1f)] [SerializeField] private float recordRateHz = 10f;
 
-        private readonly List<ControllerTelemetryFrame> history = new List<ControllerTelemetryFrame>();
+        private List<ControllerTelemetryFrame> history = new List<ControllerTelemetryFrame>();
+        public int BufferedCount => history.Count;
+        public bool BufferFull => history.Count >= TelemetrySessionWriter.MaxBufferedFrames;
+        public List<ControllerTelemetryFrame> DrainHistory() { var batch = history; history = new List<ControllerTelemetryFrame>(); return batch; }
+        public void ReleaseHistory() { history = new List<ControllerTelemetryFrame>(); }
         private bool recording;
         private double sessionStartRealtime;
         private double nextSampleRealtime;
@@ -72,7 +76,7 @@ namespace MainProjeto.Telemetria
 
         private void Update()
         {
-            if (!recording || !CanRecord) return;
+            if (!recording || !CanRecord || BufferFull) return;
             double now = Time.realtimeSinceStartupAsDouble;
             if (now < nextSampleRealtime) return;
             Vector3 lp = leftControllerTransform.position;

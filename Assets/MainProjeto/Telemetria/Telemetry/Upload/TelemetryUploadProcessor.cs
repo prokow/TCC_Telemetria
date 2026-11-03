@@ -22,26 +22,6 @@ namespace MainProjeto.Telemetria.Upload
             this.projectOrigin = new Uri(projectOrigin).GetLeftPart(UriPartial.Authority);
             this.now = now ?? (() => DateTimeOffset.UtcNow);
         }
-        private static (string collector, string origin) ReadBinding(string path)
-        {
-            using (var stream = File.OpenText(path))
-            using (var reader = new JsonTextReader(stream))
-            {
-                string collector = null, origin = null;
-                while (reader.Read())
-                {
-                    if (reader.TokenType == JsonToken.PropertyName && reader.Depth == 1)
-                    {
-                        string name = (string)reader.Value;
-                        reader.Read();
-                        if (name == "CollectorUserId") collector = reader.Value as string;
-                        else if (name == "SupabaseProjectOrigin") origin = reader.Value as string;
-                        else reader.Skip();
-                    }
-                }
-                return (collector, origin);
-            }
-        }
         public async Task ProcessAsync(CancellationToken cancellationToken, bool force = false)
         {
             if (!await gate.WaitAsync(0, cancellationToken)) return;
@@ -57,28 +37,35 @@ namespace MainProjeto.Telemetria.Upload
                         if (state != null && (state.Status == "Uploaded" || state.ProjectOrigin != projectOrigin || (!force && (state.Status == "ReviewRequired" || state.NextAttemptUtc > now())))) continue;
                         string folder = store.Folder(id);
                         if (!File.Exists(Path.Combine(folder, "Session.json"))) continue;
-                        // Nao observar uma gravacao recem iniciada ou um arquivo incompleto.
+                        // New sessions are not visible until all derived files are committed.
+                        if (Directory.Exists(Path.Combine(folder, "Chunks")) && !File.Exists(Path.Combine(folder, "Ready.json"))) continue;
                         if (!File.Exists(Path.Combine(folder, "Ready.json")) && File.GetLastWriteTimeUtc(Path.Combine(folder, "Session.json")) > now().UtcDateTime.AddSeconds(-5)) continue;
                         var session = await auth.GetAsync(cancellationToken);
                         if (state != null && state.OperatorId != session.UserId) continue;
                         if (state == null)
                         {
-                            var header = await Task.Run(() => ReadBinding(Path.Combine(folder, "Session.json")), cancellationToken);
-                            string collector = header.collector, recordedOrigin = header.origin;
+                            var header = await Task.Run(() => TelemetryJsonStream.Read(Path.Combine(folder, "Session.json")), cancellationToken);
+                            string collector = header.CollectorUserId, recordedOrigin = header.SupabaseProjectOrigin;
                             if (!string.IsNullOrEmpty(collector) && collector != session.UserId || !string.IsNullOrEmpty(recordedOrigin) && recordedOrigin != projectOrigin) continue;
+                            if (TelemetryUploadPackage.ValidCode(header.ParticipantCode))
+                            {
+                                state = new TelemetryUploadState { SessionId = id, ParticipantCode = header.ParticipantCode, OperatorId = session.UserId, ProjectOrigin = projectOrigin };
+                                await Task.Run(() => store.Save(state));
+                            }
                         }
                         var package = await Task.Run(() => TelemetryUploadPackage.Build(folder, session.UserId), cancellationToken);
                         if (state == null) state = new TelemetryUploadState { SessionId = id, ParticipantCode = package.ParticipantCode, OperatorId = session.UserId, ProjectOrigin = projectOrigin, Digest = package.Digest };
-                        if (state.ParticipantCode != package.ParticipantCode || state.Digest != package.Digest) throw new TelemetryUploadException(TelemetryUploadFailure.Conflict, "Os arquivos locais mudaram depois de preparar o envio. Confira este UUID antes de reenviar.");
-                        state.Attempts++; state.Status = "Uploading"; state.ConfirmedFiles = 0; state.LastError = null; state.LastErrorType = null; store.Save(state);
+                        if (state.ParticipantCode != package.ParticipantCode || (!string.IsNullOrEmpty(state.Digest) && state.Digest != package.Digest)) throw new TelemetryUploadException(TelemetryUploadFailure.Conflict, "Os arquivos locais mudaram depois de preparar o envio. Confira este UUID antes de reenviar.");
+                        state.Digest = package.Digest;
+                        state.Attempts++; state.Status = "Uploading"; state.ConfirmedFiles = 0; state.LastError = null; state.LastErrorType = null; await Task.Run(() => store.Save(state));
                         Status?.Invoke("Enviando sessao " + id + "...");
-                        await client.UploadAsync(package, session.AccessToken, count => { state.ConfirmedFiles = count; store.Save(state); }, cancellationToken);
-                        state.Status = "Uploaded"; state.NextAttemptUtc = DateTimeOffset.MinValue; state.LastError = null; state.LastErrorType = null; store.Save(state);
+                        await client.UploadAsync(package, session.AccessToken, async count => { state.ConfirmedFiles = count; await Task.Run(() => store.Save(state)); }, cancellationToken);
+                        state.Status = "Uploaded"; state.NextAttemptUtc = DateTimeOffset.MinValue; state.LastError = null; state.LastErrorType = null; await Task.Run(() => store.Save(state));
                         Status?.Invoke("Sessao " + id + " confirmada no Supabase (4 arquivos).");
                     }
                     catch (OperationCanceledException)
                     {
-                        if (state != null && state.Status != "Uploaded") { state.Status = "Pending"; state.NextAttemptUtc = DateTimeOffset.MinValue; store.Save(state); }
+                        if (state != null && state.Status != "Uploaded") { state.Status = "Pending"; state.NextAttemptUtc = DateTimeOffset.MinValue; await Task.Run(() => store.Save(state)); }
                         throw;
                     }
                     catch (Exception error)
@@ -90,7 +77,7 @@ namespace MainProjeto.Telemetria.Upload
                         {
                             state.Status = review ? "ReviewRequired" : "Pending"; state.LastError = message;
                             state.LastErrorType = error.GetType().Name;
-                            state.NextAttemptUtc = now().AddSeconds(Math.Min(300, 5 * Math.Pow(2, Math.Min(6, state.Attempts)))); store.Save(state);
+                            state.NextAttemptUtc = now().AddSeconds(Math.Min(300, 5 * Math.Pow(2, Math.Min(6, state.Attempts)))); await Task.Run(() => store.Save(state));
                         }
                         Status?.Invoke("Sessao " + id + ": " + message);
                     }

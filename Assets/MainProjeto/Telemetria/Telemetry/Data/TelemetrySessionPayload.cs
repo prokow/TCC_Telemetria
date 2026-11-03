@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MainProjeto.Telemetria
 {
-    // JsonUtility serializa campos públicos em tipos marcados como Serializable.
+    // Mesmo contrato JSON para checkpoints, arquivo final e analise web.
     [Serializable]
     public class TelemetrySessionPayload
     {
