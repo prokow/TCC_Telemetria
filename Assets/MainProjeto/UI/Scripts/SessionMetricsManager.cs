@@ -89,5 +89,11 @@ namespace MainProjeto.UI.Scripts
         {
             if (Instance == this) Instance = null;
         }
+
+        public void DisableShowTasks()
+        {
+            gameObject.SetActive(false);
+        }
+        
     }
 }

@@ -1,7 +1,8 @@
-using System.Collections;
+using System.Collections.Generic;
 using MainProjeto.Telemetria;
 using MainProjeto.UI.Scripts;
 using MainProjeto.Core.Scripts.Model;
+using MainProjeto.Core.Scripts.ScriptableObjects;
 using QuestTask = MainProject.Trindade.Core.Scripts.ScriptableObjects.Task;
 using UnityEngine;
 
@@ -13,6 +14,19 @@ public class AutoTelemetrySession : MonoBehaviour
 
     [SerializeField] private QuestSystemModel questSystem;
 
+    [Header("Quests que delimitam a coleta")]
+    [Tooltip("Uma única sessão: começa ao carregar a primeira quest e termina ao carregar a última (exclusiva). " +
+             "Use pelo menos duas quests diferentes. As intermediárias não dividem nem interrompem a coleta. " +
+             "Lista vazia desativa o início automático.")]
+    [SerializeField] private List<Quest> telemetryQuestSequence = new List<Quest>();
+
+    private bool initialized;
+    private bool sessionStarted;
+    private bool intervalFinished;
+    private Quest startQuest;
+    private Quest endQuest;
+    private Quest lastRecordedQuest;
+
     private void OnEnable()
     {
         if (questSystem == null) questSystem = FindFirstObjectByType<QuestSystemModel>();
@@ -21,6 +35,7 @@ public class AutoTelemetrySession : MonoBehaviour
         questSystem.onQuestLoaded.AddListener(OnQuestLoaded);
         questSystem.onQuestComplete.AddListener(OnQuestCompleted);
         questSystem.onTaskComplete.AddListener(OnTaskCompleted);
+        if (initialized) OnQuestLoaded();
     }
 
     private void OnDisable()
@@ -36,68 +51,105 @@ public class AutoTelemetrySession : MonoBehaviour
     [SerializeField]
     private bool resetMetricsOnStart = true;
 
-    private IEnumerator Start()
+    private void Start()
     {
-        // Aguarda um frame para inicializar os componentes.
-        yield return null;
-
-        if (sessionManager == null)
+        if (sessionManager == null || questSystem == null)
         {
-            Debug.LogError(
-                "[AutoTelemetrySession] SessionManager não atribuído."
-            );
-            yield break;
+            Debug.LogError("[AutoTelemetrySession] Atribua SessionManager e QuestSystem.");
+            return;
         }
 
-        if (questSystem != null && questSystem.IsSequenceComplete) yield break;
-
-        if (sessionManager.IsRecording ||
-            sessionManager.HasPendingSave)
-            yield break;
-
-        if (resetMetricsOnStart &&
-            SessionMetricsManager.Instance != null)
+        if (telemetryQuestSequence == null || telemetryQuestSequence.Count < 2)
         {
-            SessionMetricsManager.Instance.ResetMetrics();
+            Debug.LogWarning("[AutoTelemetrySession] Configure pelo menos duas quests na lista: " +
+                             "primeira = início da coleta; última = encerramento. Coleta automática desativada.");
+            return;
+        }
+        foreach (Quest configuredQuest in telemetryQuestSequence)
+        {
+            if (configuredQuest != null) continue;
+            Debug.LogError("[AutoTelemetrySession] A lista de quests da telemetria contém uma referência vazia.");
+            return;
         }
 
-        if (sessionManager.BeginSession())
+        startQuest = telemetryQuestSequence[0];
+        endQuest = telemetryQuestSequence[telemetryQuestSequence.Count - 1];
+        if (startQuest == endQuest)
         {
-            OnQuestLoaded();
-            Debug.Log(
-                "[AutoTelemetrySession] Telemetria iniciada automaticamente."
-            );
+            Debug.LogError("[AutoTelemetrySession] As quests de início e encerramento devem ser diferentes.");
+            return;
         }
+
+        // Todos os Awake já ocorreram. Se o Start do modelo carregou a primeira
+        // quest antes deste Start, processá-la aqui; caso contrário, aguardar o evento.
+        initialized = true;
+        OnQuestLoaded();
     }
 
     private void OnTaskCompleted(QuestTask task)
     {
-        if (sessionManager != null && task != null)
+        if (sessionStarted && !intervalFinished && sessionManager != null && task != null)
             sessionManager.RecordEvent("quest_task_completed", task.name, task.description);
     }
 
     private void OnQuestLoaded()
     {
-        if (sessionManager != null && questSystem != null && questSystem.quest != null)
-            sessionManager.RecordEvent("quest_started", questSystem.quest.name, questSystem.quest.questTitle);
+        if (!initialized || intervalFinished || sessionManager == null || questSystem == null) return;
+        if (questSystem.IsSequenceComplete) { OnExperienceCompleted(); return; }
+        Quest currentQuest = questSystem.quest;
+        if (currentQuest == null) return;
+
+        // A quest limite não entra na coleta: apenas registra o motivo do fim.
+        if (currentQuest == endQuest)
+        {
+            intervalFinished = true;
+            if (sessionStarted && sessionManager.IsRecording)
+            {
+                sessionManager.RecordEvent("telemetry_interval_completed", currentQuest.name, currentQuest.questTitle);
+                FinishSession();
+            }
+            return;
+        }
+
+        if (!sessionStarted)
+        {
+            if (currentQuest != startQuest) return;
+            if (!sessionManager.BeginSession())
+            {
+                Debug.LogWarning("[AutoTelemetrySession] Não foi possível iniciar a telemetria na quest configurada.");
+                return;
+            }
+            sessionStarted = true;
+            if (resetMetricsOnStart && SessionMetricsManager.Instance != null)
+                SessionMetricsManager.Instance.ResetMetrics();
+            Debug.Log("[AutoTelemetrySession] Telemetria iniciada na quest " + currentQuest.name + ".");
+        }
+
+        // Uma parada manual ou de proteção não deve abrir outra sessão neste intervalo.
+        if (!sessionManager.IsRecording) { intervalFinished = true; return; }
+        if (lastRecordedQuest == currentQuest) return;
+        lastRecordedQuest = currentQuest;
+        sessionManager.RecordEvent("quest_started", currentQuest.name, currentQuest.questTitle);
     }
 
     private void OnQuestCompleted()
     {
-        if (sessionManager != null && questSystem != null && questSystem.quest != null)
+        if (sessionStarted && !intervalFinished && sessionManager != null && questSystem != null && questSystem.quest != null)
             sessionManager.RecordEvent("quest_completed", questSystem.quest.name, questSystem.quest.questTitle);
     }
 
     private void OnExperienceCompleted()
     {
-        if (sessionManager == null || !sessionManager.IsRecording) return;
+        intervalFinished = true;
+        if (!sessionStarted || sessionManager == null || !sessionManager.IsRecording) return;
         sessionManager.RecordEvent("experience_completed", "quest_sequence");
         FinishSession();
     }
 
-    // Chamar quando o jogador terminar todas as fases.
+    // Também encerra se a experiência terminar antes de alcançar a quest limite.
     public async void FinishSession()
     {
+        intervalFinished = true;
         if (sessionManager == null ||
             !sessionManager.IsRecording)
             return;
