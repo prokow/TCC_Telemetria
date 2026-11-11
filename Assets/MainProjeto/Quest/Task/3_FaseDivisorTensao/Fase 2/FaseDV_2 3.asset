@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FaseDV_2 3
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: "apertar bot\xE3o"
-  description: "Aperte o bot\xE3o ao lado do monitor para finalizar"
+  description: "Aperte o bot\xE3o ao lado do monitor para finalizar."
   dependencies:
   - {fileID: 11400000, guid: 6e1259804468fec4a8a53519842ba096, type: 2}

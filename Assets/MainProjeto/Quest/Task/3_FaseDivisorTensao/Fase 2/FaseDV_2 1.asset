@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FaseDV_2 1
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: Colocar Resistor 330ohm
-  description: Colocar Resistor 330ohm no lugar correto
+  description: Colocar Resistor 330ohm no lugar correto.
   dependencies:
   - {fileID: 11400000, guid: 9c8caccb6e24a974f97b6e50a1c06ba4, type: 2}

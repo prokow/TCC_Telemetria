@@ -10,13 +10,15 @@ GameObject:
   m_Component:
   - component: {fileID: 2231883874532883399}
   - component: {fileID: 5458425233782327901}
+  - component: {fileID: 3728137899496558104}
+  - component: {fileID: 7011504914543033160}
   m_Layer: 0
   m_Name: InicioRobo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2231883874532883399
 Transform:
   m_ObjectHideFlags: 0
@@ -39,7 +41,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5409456001580317594}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e230b795d3211a54d94093611e43535e, type: 3}
   m_Name: 
@@ -48,6 +50,67 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5edbaef8fbb1ea140b96dc6f7bdb6ab6, type: 2}
   - {fileID: 11400000, guid: 2353d266a78ba6a41b77477da7de5ec6, type: 2}
   - {fileID: 11400000, guid: 6afb7311e8446b34f91bd4372b04c17a, type: 2}
+  - {fileID: 11400000, guid: cf64f8f35e928b74b9f5afc0d8a16f13, type: 2}
+  - {fileID: 11400000, guid: 5fd6894c5b58e5f45b4f4067cdee7d50, type: 2}
+  - {fileID: 11400000, guid: 27ce03db3a3959146b99bee9ecaa1c6a, type: 2}
   - {fileID: 11400000, guid: c7f468c3ca0d0744fba28df73b8939ee, type: 2}
-  tempoEntreFalas: 20
-  tarefaOuvirRobo: {fileID: 11400000, guid: 47f90e3f0da0362489992c689afd875d, type: 2}
+  - {fileID: 11400000, guid: 40e9c263009c1b242823dcbca58d385a, type: 2}
+  - {fileID: 11400000, guid: cc5f8d93e24cade45a880f6d8d6b2319, type: 2}
+  - {fileID: 11400000, guid: 6006bd12a22cee646a63b38184c77d83, type: 2}
+  - {fileID: 11400000, guid: 3aaa56d914640df4aafed3c84e172670, type: 2}
+  tempoEntreFalas: 8
+  falaRoboTask: {fileID: 11400000, guid: 47f90e3f0da0362489992c689afd875d, type: 2}
+  autoConcluir: 0
+  botaoProximaQuest: {fileID: 0}
+  onInitiateNarrative:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &3728137899496558104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5409456001580317594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2e5e34ae1840bbaf9b59ba1af129ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainProjeto.Robot.Scripts.RobotNarrativeController
+  falas:
+  - {fileID: 11400000, guid: 5edbaef8fbb1ea140b96dc6f7bdb6ab6, type: 2}
+  - {fileID: 11400000, guid: 2353d266a78ba6a41b77477da7de5ec6, type: 2}
+  - {fileID: 11400000, guid: 6afb7311e8446b34f91bd4372b04c17a, type: 2}
+  - {fileID: 11400000, guid: cf64f8f35e928b74b9f5afc0d8a16f13, type: 2}
+  - {fileID: 11400000, guid: 5fd6894c5b58e5f45b4f4067cdee7d50, type: 2}
+  - {fileID: 11400000, guid: 27ce03db3a3959146b99bee9ecaa1c6a, type: 2}
+  - {fileID: 11400000, guid: c7f468c3ca0d0744fba28df73b8939ee, type: 2}
+  - {fileID: 11400000, guid: 40e9c263009c1b242823dcbca58d385a, type: 2}
+  - {fileID: 11400000, guid: cc5f8d93e24cade45a880f6d8d6b2319, type: 2}
+  - {fileID: 11400000, guid: 6006bd12a22cee646a63b38184c77d83, type: 2}
+  - {fileID: 11400000, guid: 3aaa56d914640df4aafed3c84e172670, type: 2}
+  tempoEntreFalas: 8
+  aguardarBotaoDoUsuario: 1
+  falaRoboTask: {fileID: 11400000, guid: 47f90e3f0da0362489992c689afd875d, type: 2}
+  autoConcluir: 0
+  botaoProximaQuest: {fileID: 0}
+  onInitiateNarrative:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &7011504914543033160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5409456001580317594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39d41316af2a232438d597d45805be91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.TaskCompleteListener
+  task: {fileID: 11400000, guid: 47f90e3f0da0362489992c689afd875d, type: 2}
+  onComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  lockInteractable: 1

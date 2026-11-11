@@ -101,9 +101,9 @@ namespace MainProjeto.Prefabs.Watch
 
                     if (_canvasWatch != null)
                     {
-                        _canvasWatch.gameObject.SetActive(true);
+                        _canvasWatch.gameObject.SetActive(false);
                     }
-                    Debug.Log("Relógio desbloqueado para uso!");
+                    //Debug.Log("Relógio desbloqueado para uso!");
                 }
             }
             else

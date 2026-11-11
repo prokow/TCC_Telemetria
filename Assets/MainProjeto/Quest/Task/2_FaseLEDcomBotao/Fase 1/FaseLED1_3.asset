@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FaseLED1_3
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: Colocar LED no lugar correto
-  description: Colocar LED no lugar correto
+  description: Colocar LED no lugar correto.
   dependencies:
   - {fileID: 11400000, guid: 116bdde28b5ff7148818182e0c271d88, type: 2}

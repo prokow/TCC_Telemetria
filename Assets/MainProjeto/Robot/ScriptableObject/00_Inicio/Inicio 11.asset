@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 90db9f30858fa9746a1d1730d0dd5e9e, type: 3}
-  m_Name: Robo_Tutorial 7
-  m_EditorClassIdentifier: Assembly-CSharp::MainProjeto.Robot.Scripts.RobotFeedbackData
-  name: "O resistor ser\xE1 primeiro "
-  sound: {fileID: 8300000, guid: d3ecc2ec926f9a14cbf0df97f2c686ba, type: 3}
-  volume: 0.5
+  m_Name: Inicio 11
+  m_EditorClassIdentifier: Assembly-CSharp::RobotSounds
+  name: Conversa1
+  sound: {fileID: 8300000, guid: 91e28e6ac4f35574faca5013ecab6ec9, type: 3}
+  volume: 0.502
   pitch: 1
-  ballonText: "Dica: Pressione o bot\xE3o X no controle esquerdo para abrir o gerenciador
-    de tarefas e verificar seu objetivo atual."
+  ballonText: "Chega de papo vamos para a m\xE3o na massa, aperte no bot\xE3o a direita
+    do monitor, quando estiver verde."
   ballonDisplayTime: 10
   animationTriggers: []

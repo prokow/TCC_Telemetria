@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FaseLED2_1
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: coloque resistor
-  description: Coloque o Resistor de 1K ohm no lugar correto
+  description: Coloque o Resistor de 1K ohm no lugar correto.
   dependencies:
   - {fileID: 11400000, guid: 439facd20f7f072499ec7be8b03a0927, type: 2}

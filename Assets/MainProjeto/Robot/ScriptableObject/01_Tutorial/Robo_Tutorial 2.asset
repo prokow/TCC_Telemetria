@@ -17,6 +17,6 @@ MonoBehaviour:
   volume: 0.5
   pitch: 1
   ballonText: Comece pelo resistor. Ele deve ser instalado primeiro para limitar
-    a corrente e proteger os LEDs de sobrecargas.
+    a corrente e proteger o LED de sobrecarga.
   ballonDisplayTime: 10
   animationTriggers: []

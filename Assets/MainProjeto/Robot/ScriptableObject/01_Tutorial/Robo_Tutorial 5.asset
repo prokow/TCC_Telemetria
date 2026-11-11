@@ -16,7 +16,7 @@ MonoBehaviour:
   sound: {fileID: 8300000, guid: d3ecc2ec926f9a14cbf0df97f2c686ba, type: 3}
   volume: 0.5
   pitch: 1
-  ballonText: "Aten\xE7\xE3o \xE0 polaridade: gire o LED se necess\xE1rio, pois ele
-    s\xF3 acende se a corrente fluir no sentido correto"
+  ballonText: "Como o LED s\xF3 acende se a corrente fluir no sentido certo, use
+    o comando que aparecer\xE1 para girar o LED, caso seja necess\xE1rio."
   ballonDisplayTime: 10
   animationTriggers: []

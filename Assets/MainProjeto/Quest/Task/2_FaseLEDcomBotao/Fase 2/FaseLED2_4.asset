@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: FaseLED2_4
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: vermelho botao
-  description: Apertar botao do lado Vermelho para ligar LED Vermelho
+  description: Apertar botao do lado Vermelho para ligar LED Vermelho.
   dependencies:
   - {fileID: 11400000, guid: 2e0eee0b9e51b684289c18c289a034fc, type: 2}
   - {fileID: 11400000, guid: 4ceb9fda8bc71dc43966e8efbe52c83f, type: 2}

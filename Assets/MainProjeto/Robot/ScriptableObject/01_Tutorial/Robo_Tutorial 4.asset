@@ -16,7 +16,7 @@ MonoBehaviour:
   sound: {fileID: 8300000, guid: eca9c9bd6f02b164da56cc9c968210a5, type: 3}
   volume: 0.5
   pitch: 1
-  ballonText: "Al\xE9m disso, voc\xEA tamb\xE9m pode girar o LED para ajustar a polaridade.
-    Ele s\xF3 acende se a corrente fluir no sentido correto."
+  ballonText: "Observe a posi\xE7\xE3o dos cabos de energia na protoboard para alinhar
+    os terminais corretamente."
   ballonDisplayTime: 10
   animationTriggers: []

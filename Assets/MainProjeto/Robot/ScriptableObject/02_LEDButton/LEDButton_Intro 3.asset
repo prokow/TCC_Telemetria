@@ -17,6 +17,6 @@ MonoBehaviour:
   volume: 0.5
   pitch: 1
   ballonText: "Dica: Atr\xE1s do monitor da mesa de seu progresso atual, haver\xE1
-    uma imagem de como \xE9 o circuito"
+    uma imagem de como \xE9 o circuito."
   ballonDisplayTime: 10
   animationTriggers: []

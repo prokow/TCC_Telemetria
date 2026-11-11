@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FaseLED2_2
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: Botao vermelho
-  description: Colocar Botao do lado vermelho no lugar correto
+  description: Colocar Botao do lado vermelho no lugar correto.
   dependencies:
   - {fileID: 11400000, guid: 8d6f9b67dba1a1a43a021d45298f7dce, type: 2}

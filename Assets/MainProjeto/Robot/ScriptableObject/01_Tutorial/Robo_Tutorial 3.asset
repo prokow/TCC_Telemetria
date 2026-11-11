@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Robo_Tutorial 3
   m_EditorClassIdentifier: Assembly-CSharp::MainProjeto.Robot.Scripts.RobotFeedbackData
   name: "O resistor ser\xE1 primeiro "
-  sound: {fileID: 8300000, guid: eca9c9bd6f02b164da56cc9c968210a5, type: 3}
+  sound: {fileID: 8300000, guid: f8a592c91732f6f4ebe682d7db8a432d, type: 3}
   volume: 0.5
   pitch: 1
-  ballonText: "Para instalar os LEDs, guie-se pelas cores dos jumpers: cada cor indica
-    a posi\xE7\xE3o correta na protoboard."
+  ballonText: "Depois do resistor, posicione o LED prestando aten\xE7\xE3o na polaridade:
+    a perna maior \xE9 o positivo (\xE2nodo) e a menor \xE9 o negativo (c\xE1todo)."
   ballonDisplayTime: 10
   animationTriggers: []

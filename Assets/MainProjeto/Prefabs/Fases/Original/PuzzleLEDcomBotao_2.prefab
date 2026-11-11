@@ -456,9 +456,9 @@ MonoBehaviour:
           z: 0.5325216
           w: -0.4398044
     - Position:
-        x: 1.9100003
-        y: 1.9958823
-        z: 0.7116604
+        x: 1.910078
+        y: 1.995884
+        z: 0.36731958
       TangentIn:
         x: -0.000000059604645
         y: 0
@@ -474,23 +474,23 @@ MonoBehaviour:
           z: 0.4678161
           w: 0.5039567
     - Position:
-        x: 1.9640002
-        y: 1.4058826
-        z: 0.6996603
+        x: 1.9640589
+        y: 1.4058838
+        z: 0.3553195
       TangentIn:
         x: -0
         y: -0
-        z: -0.05925872
+        z: -0.059258595
       TangentOut:
         x: 0
         y: 0
-        z: 0.05925872
+        z: 0.059258595
       Rotation:
         value:
-          x: 0.38767475
-          y: -0.59986126
-          z: 0.62001354
-          w: 0.32474306
+          x: 0.39083314
+          y: -0.5978082
+          z: 0.6182816
+          w: 0.32802847
     m_MetaData:
     - Mode: 0
       Tension: 0.5
@@ -851,6 +851,7 @@ MonoBehaviour:
   m_AutoFindParentInteractableInHierarchy: 0
   m_ParentInteractableObject: {fileID: 4527243595583327679}
   pressTask: {fileID: 11400000, guid: ae8d132ef9d647e469ba82930dfcc997, type: 2}
+  requireLedConfirmation: 1
 --- !u!114 &590508306003722090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1212,7 +1213,6 @@ GameObject:
   - component: {fileID: 5560321930658020696}
   - component: {fileID: 7462693876142748254}
   - component: {fileID: 1014677558234657531}
-  - component: {fileID: 2150109785535255251}
   - component: {fileID: 7064294491982149689}
   m_Layer: 0
   m_Name: 1kOhm_red
@@ -1415,7 +1415,7 @@ MonoBehaviour:
   m_MaxAngularVelocityDelta: 20
   canConnectToGround: 0
   canConnectToVcc: 1
-  canRotateComponent: 1
+  canRotateComponent: 0
   prefabRotacao: {fileID: 4860756434700478051, guid: 73f6fd5267d877241927ec6bd38f3281, type: 3}
   alturaDica: 1
   _rotationToUse: 1
@@ -1425,14 +1425,16 @@ MonoBehaviour:
   bottomExtend: 0
   _attachPoint: {fileID: 8403439723790210971}
   pivotInterno: {fileID: 1221928956050686526}
+  movementArea: {fileID: 0}
+  outsideAreaAction: 1
   autoConnectOnAwake: 1
-  autoConnectPin: {x: -10, y: -5, z: 0}
+  autoConnectPin: {x: -15, y: -3, z: 0}
   isAutoConnected: 0
   hasSpecificLimits: 1
   _limitMinX: -12
-  _limitMaxX: -12
-  _limitMinY: -5
-  _limitMaxY: -3
+  _limitMaxX: -10
+  _limitMinY: -6
+  _limitMaxY: -4
   putResistorTask: {fileID: 11400000, guid: 8d6f9b67dba1a1a43a021d45298f7dce, type: 2}
   feedbackCorreto: {fileID: 11400000, guid: 8cf59aa18fdb74d458221473b2be551f, type: 2}
   feedbackIncorreto: {fileID: 11400000, guid: 545530d3e79d29340a41435e6a03277b, type: 2}
@@ -1457,20 +1459,6 @@ MonoBehaviour:
   lookDirectionOffset: 0
   triggerLayers:
     m_Bits: 4294967295
---- !u!114 &2150109785535255251
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1157095516038860920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe46e6707488480e973374f62898a93a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MainProjeto.Robot.Scripts.FeedbackOnGrab
-  feedbackManager: {fileID: 11400000, guid: 99ad82d1d052df04e9b3f7f082f19a2d, type: 2}
-  playOnlyOnce: 1
 --- !u!114 &7064294491982149689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1713,7 +1701,6 @@ GameObject:
   - component: {fileID: 5549610011939122307}
   - component: {fileID: 4527243595583327679}
   - component: {fileID: 4244484873318081130}
-  - component: {fileID: 613192127945906882}
   m_Layer: 0
   m_Name: botao_blue
   m_TagString: Untagged
@@ -1803,7 +1790,7 @@ MonoBehaviour:
   m_Colliders:
   - {fileID: 5277544946342401595}
   m_InteractionLayers:
-    m_Bits: 3
+    m_Bits: 1
   m_DistanceCalculationMode: 1
   m_SelectMode: 0
   m_FocusMode: 1
@@ -1929,6 +1916,8 @@ MonoBehaviour:
   bottomExtend: 1
   _attachPoint: {fileID: 2828412839630784992}
   pivotInterno: {fileID: 116845786469583668}
+  movementArea: {fileID: 0}
+  outsideAreaAction: 1
   autoConnectOnAwake: 1
   autoConnectPin: {x: 10, y: 3, z: 0}
   isAutoConnected: 0
@@ -1958,27 +1947,6 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
---- !u!114 &613192127945906882
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1315660115375712615}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 449bdcda2cacb8d439093c8b081d3b6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MainProjeto.UI.HoverCallout
-  interactable: {fileID: 0}
-  calloutPrefab: {fileID: 4399402448379197727, guid: 29c4f23a0ff42e44f8d02fc995dc1ca2, type: 3}
-  heightOffset: 0.8
-  spawnAnimationDuration: 0.4
-  updatePositionAlways: 1
-  positionMode: 0
-  lookDirectionOffset: 0
-  triggerLayers:
-    m_Bits: 4294967295
 --- !u!1 &1321287708210920476
 GameObject:
   m_ObjectHideFlags: 0
@@ -1989,6 +1957,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6759625643323114872}
   - component: {fileID: 5138940048925543125}
+  - component: {fileID: 6670171188710645120}
   m_Layer: 0
   m_Name: NarrativaInicial
   m_TagString: Untagged
@@ -2025,13 +1994,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MainProjeto.Robot.Scripts.SequentialRobotNarrative
   falas:
   - {fileID: 11400000, guid: 54a60a741081efb44b056614e7389e58, type: 2}
-  tempoEntreFalas: 8
+  tempoEntreFalas: 5
   falaRoboTask: {fileID: 11400000, guid: 439facd20f7f072499ec7be8b03a0927, type: 2}
   autoConcluir: 1
   botaoProximaQuest: {fileID: 0}
   onInitiateNarrative:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6670171188710645120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1321287708210920476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39d41316af2a232438d597d45805be91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.TaskCompleteListener
+  task: {fileID: 11400000, guid: 439facd20f7f072499ec7be8b03a0927, type: 2}
+  onComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  lockInteractable: 1
 --- !u!1 &1414885052499141556
 GameObject:
   m_ObjectHideFlags: 0
@@ -2044,8 +2030,6 @@ GameObject:
   - component: {fileID: 6419962872733919139}
   - component: {fileID: 3484549382513265147}
   - component: {fileID: 635043139577111448}
-  - component: {fileID: 244460300092208031}
-  - component: {fileID: 1005834904440395137}
   m_Layer: 0
   m_Name: 1kOhm_blue
   m_TagString: Untagged
@@ -2257,6 +2241,8 @@ MonoBehaviour:
   bottomExtend: 0
   _attachPoint: {fileID: 2856671239832776087}
   pivotInterno: {fileID: 4971804651736520510}
+  movementArea: {fileID: 0}
+  outsideAreaAction: 1
   autoConnectOnAwake: 1
   autoConnectPin: {x: 5, y: -5, z: 0}
   isAutoConnected: 0
@@ -2268,41 +2254,6 @@ MonoBehaviour:
   putResistorTask: {fileID: 0}
   feedbackCorreto: {fileID: 11400000, guid: 8cf59aa18fdb74d458221473b2be551f, type: 2}
   feedbackIncorreto: {fileID: 11400000, guid: 545530d3e79d29340a41435e6a03277b, type: 2}
---- !u!114 &244460300092208031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1414885052499141556}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 449bdcda2cacb8d439093c8b081d3b6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.UI.Scripts.HoverCallout
-  interactable: {fileID: 0}
-  calloutPrefab: {fileID: 450024384306898160, guid: a9b453422a937db42aca550c33398628, type: 3}
-  heightOffset: 0.8
-  spawnAnimationDuration: 0.4
-  updatePositionAlways: 1
-  positionMode: 0
-  lookDirectionOffset: 0
-  triggerLayers:
-    m_Bits: 4294967295
---- !u!114 &1005834904440395137
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1414885052499141556}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe46e6707488480e973374f62898a93a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MainProjeto.Robot.Scripts.FeedbackOnGrab
-  feedbackManager: {fileID: 11400000, guid: 99ad82d1d052df04e9b3f7f082f19a2d, type: 2}
-  playOnlyOnce: 1
 --- !u!1 &1577943036705395068
 GameObject:
   m_ObjectHideFlags: 0
@@ -3220,9 +3171,9 @@ MonoBehaviour:
           z: 0.5325216
           w: -0.4398044
     - Position:
-        x: 1.9100003
-        y: 1.9958823
-        z: 0.7116604
+        x: 2.2935514
+        y: 1.9958591
+        z: 0.15906501
       TangentIn:
         x: -0.000000059604645
         y: 0
@@ -3238,23 +3189,23 @@ MonoBehaviour:
           z: 0.4678161
           w: 0.5039567
     - Position:
-        x: 1.9640002
-        y: 1.4058826
-        z: 0.6996603
+        x: 2.3474498
+        y: 1.405859
+        z: 0.14678335
       TangentIn:
         x: -0
         y: -0
-        z: -0.05925872
+        z: -0.05925842
       TangentOut:
         x: 0
         y: 0
-        z: 0.05925872
+        z: 0.05925842
       Rotation:
         value:
-          x: 0.38767475
-          y: -0.59986126
-          z: 0.62001354
-          w: 0.32474306
+          x: 0.38937926
+          y: -0.59895456
+          z: 0.6189309
+          w: 0.32643792
     m_MetaData:
     - Mode: 0
       Tension: 0.5
@@ -3791,14 +3742,16 @@ MonoBehaviour:
   bottomExtend: 1
   _attachPoint: {fileID: 7510866474620523954}
   pivotInterno: {fileID: 8598604290433266853}
+  movementArea: {fileID: 0}
+  outsideAreaAction: 1
   autoConnectOnAwake: 1
   autoConnectPin: {x: -19, y: -4, z: 0}
   isAutoConnected: 0
   hasSpecificLimits: 1
   _limitMinX: -19
   _limitMaxX: -17
-  _limitMinY: -5
-  _limitMaxY: -3
+  _limitMinY: -6
+  _limitMaxY: -2
   putButtonTask: {fileID: 11400000, guid: 2e0eee0b9e51b684289c18c289a034fc, type: 2}
   feedbackCorreto: {fileID: 11400000, guid: 8cf59aa18fdb74d458221473b2be551f, type: 2}
   feedbackIncorreto: {fileID: 11400000, guid: 545530d3e79d29340a41435e6a03277b, type: 2}
@@ -3851,7 +3804,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MainProjeto.UI.HoverCallout
   interactable: {fileID: 0}
   calloutPrefab: {fileID: 4399402448379197727, guid: 29c4f23a0ff42e44f8d02fc995dc1ca2, type: 3}
-  heightOffset: 0.8
+  heightOffset: 0.6
   spawnAnimationDuration: 0.4
   updatePositionAlways: 1
   positionMode: 0
@@ -4169,6 +4122,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5443167712164287713}
   - component: {fileID: 1353378535538302650}
+  - component: {fileID: 1800186591461841407}
   m_Layer: 0
   m_Name: NarrativaFinal
   m_TagString: Untagged
@@ -4205,13 +4159,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MainProjeto.Robot.Scripts.SequentialRobotNarrative
   falas:
   - {fileID: 11400000, guid: 479d995202d048d40a819db22ff6f825, type: 2}
-  tempoEntreFalas: 8
+  tempoEntreFalas: 5
   falaRoboTask: {fileID: 11400000, guid: 042586dd8db58a1409dd14be76bce600, type: 2}
   autoConcluir: 0
   botaoProximaQuest: {fileID: 0}
   onInitiateNarrative:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1800186591461841407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4142018154462108539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39d41316af2a232438d597d45805be91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.TaskCompleteListener
+  task: {fileID: 11400000, guid: 042586dd8db58a1409dd14be76bce600, type: 2}
+  onComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  lockInteractable: 1
 --- !u!1 &4235030401723751598
 GameObject:
   m_ObjectHideFlags: 0
@@ -4389,6 +4360,7 @@ GameObject:
   - component: {fileID: 3267638887030686413}
   - component: {fileID: 346993626012384150}
   - component: {fileID: 2529540964138939230}
+  - component: {fileID: 8510605016846956021}
   - component: {fileID: 7718192079515310553}
   m_Layer: 0
   m_Name: led_blue
@@ -4457,7 +4429,7 @@ MonoBehaviour:
   m_InteractionManager: {fileID: 0}
   m_Colliders: []
   m_InteractionLayers:
-    m_Bits: 3
+    m_Bits: 1
   m_DistanceCalculationMode: 1
   m_SelectMode: 0
   m_FocusMode: 1
@@ -4583,16 +4555,19 @@ MonoBehaviour:
   bottomExtend: 0
   _attachPoint: {fileID: 3744741878951503178}
   pivotInterno: {fileID: 4520764432189041094}
+  movementArea: {fileID: 0}
+  outsideAreaAction: 1
   autoConnectOnAwake: 1
   autoConnectPin: {x: 3, y: 2, z: 0}
   isAutoConnected: 0
   hasSpecificLimits: 1
   _limitMinX: 4
   _limitMaxX: 5
-  _limitMinY: 3
-  _limitMaxY: 4
+  _limitMinY: 2
+  _limitMaxY: 5
   pushButtonSwitch: {fileID: 586409694761248727}
   LedTask: {fileID: 11400000, guid: 0db138bb3ac230346ac968f5e020d5f6, type: 2}
+  lightUpTask: {fileID: 11400000, guid: fe1facf1dcdd17b4d8b18515c70b7580, type: 2}
   feedbackCorreto: {fileID: 11400000, guid: 8cf59aa18fdb74d458221473b2be551f, type: 2}
   feedbackIncorreto: {fileID: 11400000, guid: 545530d3e79d29340a41435e6a03277b, type: 2}
   invertPolarity: 1
@@ -4631,6 +4606,23 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   lockInteractable: 1
+--- !u!114 &8510605016846956021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4797117789453242482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39d41316af2a232438d597d45805be91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.TaskCompleteListener
+  task: {fileID: 11400000, guid: fe1facf1dcdd17b4d8b18515c70b7580, type: 2}
+  onComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  lockInteractable: 0
 --- !u!114 &7718192079515310553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5497,27 +5489,27 @@ MonoBehaviour:
   - m_EditModeType: 1
     m_Knots:
     - Position:
-        x: 1.2750006
-        y: 1.3668826
-        z: 0.6906605
+        x: 1.2942994
+        y: 1.3669796
+        z: 0.7596712
       TangentIn:
         x: -0
         y: -0
-        z: -0.06076463
+        z: -0.060765855
       TangentOut:
         x: 0
         y: 0
-        z: 0.06076463
+        z: 0.060765855
       Rotation:
         value:
-          x: -0.6885233
-          y: 0.09735923
-          z: 0.038136248
-          w: 0.7176368
+          x: -0.68840635
+          y: 0.097440116
+          z: 0.03816152
+          w: 0.71773666
     - Position:
-        x: 1.3280005
-        y: 1.9718826
-        z: 0.71066046
+        x: 1.347367
+        y: 1.9719801
+        z: 0.7798481
       TangentIn:
         x: 0.000000007450581
         y: 0.000000044703484
@@ -5533,7 +5525,7 @@ MonoBehaviour:
           z: 0.5325216
           w: -0.4398044
     - Position:
-        x: 2.1575618
+        x: 1.7792008
         y: 1.9959793
         z: 0.711421
       TangentIn:
@@ -5551,7 +5543,7 @@ MonoBehaviour:
           z: 0.4678161
           w: 0.5039567
     - Position:
-        x: 2.2114396
+        x: 1.8330787
         y: 1.4059801
         z: 0.700017
       TangentIn:
@@ -5564,10 +5556,10 @@ MonoBehaviour:
         z: 0.05925639
       Rotation:
         value:
-          x: 0.3858266
-          y: -0.60063344
-          z: 0.62116003
-          w: 0.32332274
+          x: 0.3832881
+          y: -0.6022565
+          z: 0.62251914
+          w: 0.32069808
     m_MetaData:
     - Mode: 0
       Tension: 0.5
@@ -5690,6 +5682,7 @@ GameObject:
   - component: {fileID: 5974872723964155971}
   - component: {fileID: 8327688584043483920}
   - component: {fileID: 2415502573193039225}
+  - component: {fileID: 7132258918234160371}
   - component: {fileID: 2608306407446478997}
   m_Layer: 0
   m_Name: led_red
@@ -5884,16 +5877,19 @@ MonoBehaviour:
   bottomExtend: 0
   _attachPoint: {fileID: 6070610273277372548}
   pivotInterno: {fileID: 7055228894082576717}
+  movementArea: {fileID: 0}
+  outsideAreaAction: 1
   autoConnectOnAwake: 1
-  autoConnectPin: {x: -18, y: 4, z: 0}
+  autoConnectPin: {x: -13, y: 2, z: 0}
   isAutoConnected: 0
   hasSpecificLimits: 1
-  _limitMinX: -19
+  _limitMinX: -17
   _limitMaxX: -16
-  _limitMinY: 4
-  _limitMaxY: 4
+  _limitMinY: 2
+  _limitMaxY: 5
   pushButtonSwitch: {fileID: 3070111945244332323}
-  LedTask: {fileID: 11400000, guid: b07291d94c3340d40a0775cf67a2e214, type: 2}
+  LedTask: {fileID: 11400000, guid: 4ceb9fda8bc71dc43966e8efbe52c83f, type: 2}
+  lightUpTask: {fileID: 11400000, guid: 0b586a69af4db8c4586ee29dd5775bc4, type: 2}
   feedbackCorreto: {fileID: 11400000, guid: 8cf59aa18fdb74d458221473b2be551f, type: 2}
   feedbackIncorreto: {fileID: 11400000, guid: 545530d3e79d29340a41435e6a03277b, type: 2}
   invertPolarity: 0
@@ -5927,11 +5923,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39d41316af2a232438d597d45805be91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.TaskCompleteListener
-  task: {fileID: 11400000, guid: b07291d94c3340d40a0775cf67a2e214, type: 2}
+  task: {fileID: 11400000, guid: 4ceb9fda8bc71dc43966e8efbe52c83f, type: 2}
   onComplete:
     m_PersistentCalls:
       m_Calls: []
   lockInteractable: 1
+--- !u!114 &7132258918234160371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6450553419420673199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39d41316af2a232438d597d45805be91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.TaskCompleteListener
+  task: {fileID: 11400000, guid: 0b586a69af4db8c4586ee29dd5775bc4, type: 2}
+  onComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  lockInteractable: 0
 --- !u!114 &2608306407446478997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6353,7 +6366,7 @@ MonoBehaviour:
     - Position:
         x: 1.6550794
         y: 1.3668604
-        z: 1.5714703
+        z: 1.8320193
       TangentIn:
         x: -0
         y: -0
@@ -6364,14 +6377,14 @@ MonoBehaviour:
         z: 0.061322838
       Rotation:
         value:
-          x: -0.68015844
-          y: 0.1261996
-          z: 0.065028414
-          w: 0.7191868
+          x: -0.6795632
+          y: 0.1293661
+          z: 0.06837734
+          w: 0.718876
     - Position:
         x: 1.7121482
         y: 1.97686
-        z: 1.5977879
+        z: 1.8583369
       TangentIn:
         x: 0.000000007450581
         y: 0.000000044703484
@@ -6956,6 +6969,7 @@ MonoBehaviour:
   m_AutoFindParentInteractableInHierarchy: 0
   m_ParentInteractableObject: {fileID: 8765452669243718342}
   pressTask: {fileID: 11400000, guid: b07291d94c3340d40a0775cf67a2e214, type: 2}
+  requireLedConfirmation: 1
 --- !u!114 &2292538388738778509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7005,7 +7019,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MainProjeto.UI.HoverCallout
   interactable: {fileID: 0}
   calloutPrefab: {fileID: 4399402448379197727, guid: b427df6c1d9149247944fda6cc92f341, type: 3}
-  heightOffset: 0.8
+  heightOffset: 1.5
   spawnAnimationDuration: 0.4
   updatePositionAlways: 1
   positionMode: 0
@@ -7603,7 +7617,7 @@ MonoBehaviour:
     - Position:
         x: 1.8919172
         y: 1.995883
-        z: 0.71131784
+        z: 0.35631794
       TangentIn:
         x: -0.000000059604645
         y: 0
@@ -7621,7 +7635,7 @@ MonoBehaviour:
     - Position:
         x: 1.9453931
         y: 1.4058828
-        z: 0.6993179
+        z: 0.34431803
       TangentIn:
         x: -0
         y: -0
@@ -7632,10 +7646,10 @@ MonoBehaviour:
         z: 0.059254017
       Rotation:
         value:
-          x: 0.38612676
-          y: -0.6008594
-          z: 0.6205636
-          w: 0.32368964
+          x: 0.39863354
+          y: -0.5926357
+          z: 0.6136441
+          w: 0.33662307
     m_MetaData:
     - Mode: 0
       Tension: 0.5

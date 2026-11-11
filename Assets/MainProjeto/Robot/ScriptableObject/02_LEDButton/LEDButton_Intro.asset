@@ -17,6 +17,6 @@ MonoBehaviour:
   volume: 0.5
   pitch: 1
   ballonText: "Este circuito se chama LED com bot\xE3o, onde quando o circuito estiver
-    fechado, ser\xE1 poss\xEDvel pressionar o bot\xE3o e o LED ir\xE1 acender"
+    fechado, ser\xE1 poss\xEDvel pressionar o bot\xE3o e o LED ir\xE1 acender."
   ballonDisplayTime: 10
   animationTriggers: []

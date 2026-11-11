@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FaseLED1_4
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: "Aperte o bot\xE3o"
-  description: "Aperte o bot\xE3o para acender o LED"
+  description: "Aperte o bot\xE3o para acender o LED."
   dependencies:
   - {fileID: 11400000, guid: f26364f082a3b1d40a30aa3dcca0987a, type: 2}

@@ -33312,26 +33312,30 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: b6dde8bd2dba18c48b5772f97f908b5c, type: 2}
     - target: {fileID: 339772775472178096, guid: 7af572a56f790044fb133e606f76036b, type: 3}
       propertyPath: _requisitionQuest.Array.size
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 339772775472178096, guid: 7af572a56f790044fb133e606f76036b, type: 3}
       propertyPath: '_requisitionQuest.Array.data[0]'
       value: 
-      objectReference: {fileID: 11400000, guid: 12c4bc1ba56dc8b479d7175ff2ce8efb, type: 2}
+      objectReference: {fileID: 11400000, guid: b6dde8bd2dba18c48b5772f97f908b5c, type: 2}
     - target: {fileID: 339772775472178096, guid: 7af572a56f790044fb133e606f76036b, type: 3}
       propertyPath: '_requisitionQuest.Array.data[1]'
       value: 
-      objectReference: {fileID: 11400000, guid: ff7b46a21c488ac408eb8068eabab2ac, type: 2}
+      objectReference: {fileID: 11400000, guid: 12c4bc1ba56dc8b479d7175ff2ce8efb, type: 2}
     - target: {fileID: 339772775472178096, guid: 7af572a56f790044fb133e606f76036b, type: 3}
       propertyPath: '_requisitionQuest.Array.data[2]'
       value: 
-      objectReference: {fileID: 11400000, guid: be5768b91ab43944ba5a6623256b0985, type: 2}
+      objectReference: {fileID: 11400000, guid: ff7b46a21c488ac408eb8068eabab2ac, type: 2}
     - target: {fileID: 339772775472178096, guid: 7af572a56f790044fb133e606f76036b, type: 3}
       propertyPath: '_requisitionQuest.Array.data[3]'
       value: 
-      objectReference: {fileID: 11400000, guid: 3515cd8132757454babbfae9d2ce8dc9, type: 2}
+      objectReference: {fileID: 11400000, guid: be5768b91ab43944ba5a6623256b0985, type: 2}
     - target: {fileID: 339772775472178096, guid: 7af572a56f790044fb133e606f76036b, type: 3}
       propertyPath: '_requisitionQuest.Array.data[4]'
+      value: 
+      objectReference: {fileID: 11400000, guid: ea49e6b7c0a4f6941b4c32ae9f7f49a5, type: 2}
+    - target: {fileID: 339772775472178096, guid: 7af572a56f790044fb133e606f76036b, type: 3}
+      propertyPath: '_requisitionQuest.Array.data[5]'
       value: 
       objectReference: {fileID: 11400000, guid: ea49e6b7c0a4f6941b4c32ae9f7f49a5, type: 2}
     - target: {fileID: 919279811529455749, guid: 7af572a56f790044fb133e606f76036b, type: 3}
@@ -34634,6 +34638,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: 01_FaseTutorial
       objectReference: {fileID: 0}
+    - target: {fileID: 1015065943942299289, guid: 93ba437240a6a6440a3532a605289496, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1119304018062592840, guid: 93ba437240a6a6440a3532a605289496, type: 3}
       propertyPath: _limitMaxY
       value: 5
@@ -34673,6 +34681,30 @@ PrefabInstance:
     - target: {fileID: 4255078123379926651, guid: 93ba437240a6a6440a3532a605289496, type: 3}
       propertyPath: outsideAreaAction
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4602271127423101251, guid: 93ba437240a6a6440a3532a605289496, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4602271127423101251, guid: 93ba437240a6a6440a3532a605289496, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4602271127423101251, guid: 93ba437240a6a6440a3532a605289496, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 12.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4602271127423101251, guid: 93ba437240a6a6440a3532a605289496, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4602271127423101251, guid: 93ba437240a6a6440a3532a605289496, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 6.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4602271127423101251, guid: 93ba437240a6a6440a3532a605289496, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 4695558084989485462, guid: 93ba437240a6a6440a3532a605289496, type: 3}
       propertyPath: m_LocalPosition.x
@@ -35828,6 +35860,30 @@ PrefabInstance:
       propertyPath: tempoEntreFalas
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 4868464781837530596, guid: 101a722ebb6a8204eb0c7a25b3aed0c5, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4868464781837530596, guid: 101a722ebb6a8204eb0c7a25b3aed0c5, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4868464781837530596, guid: 101a722ebb6a8204eb0c7a25b3aed0c5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 12.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4868464781837530596, guid: 101a722ebb6a8204eb0c7a25b3aed0c5, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4868464781837530596, guid: 101a722ebb6a8204eb0c7a25b3aed0c5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 6.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4868464781837530596, guid: 101a722ebb6a8204eb0c7a25b3aed0c5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -2
+      objectReference: {fileID: 0}
     - target: {fileID: 4955099658358025560, guid: 101a722ebb6a8204eb0c7a25b3aed0c5, type: 3}
       propertyPath: m_Camera
       value: 
@@ -35835,6 +35891,10 @@ PrefabInstance:
     - target: {fileID: 5916626155904020097, guid: 101a722ebb6a8204eb0c7a25b3aed0c5, type: 3}
       propertyPath: m_Name
       value: 02_PuzzleLEDcomBotao_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5916626155904020097, guid: 101a722ebb6a8204eb0c7a25b3aed0c5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6206126965621685658, guid: 101a722ebb6a8204eb0c7a25b3aed0c5, type: 3}
       propertyPath: m_Camera

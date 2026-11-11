@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FaseLED1_1
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: Resistor
-  description: Coloque o Resistor no lugar correto
+  description: Coloque o Resistor no lugar correto.
   dependencies:
   - {fileID: 11400000, guid: f9262e84c71d2d645a0f8102db6548d2, type: 2}

@@ -17,6 +17,6 @@ MonoBehaviour:
   volume: 0.5
   pitch: 1
   ballonText: "Para este desafio, arrume as posi\xE7\xF5es dos demais componentes
-    e eu avisarei se est\xE1 correto ou incorreto"
+    e eu avisarei se est\xE1 correto ou incorreto."
   ballonDisplayTime: 10
   animationTriggers: []

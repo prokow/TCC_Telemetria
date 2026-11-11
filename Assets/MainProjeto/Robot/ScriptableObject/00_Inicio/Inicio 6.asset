@@ -17,6 +17,6 @@ MonoBehaviour:
   volume: 0.502
   pitch: 1
   ballonText: "Abaixo da protoboard h\xE1 um bot\xE3o laranja para exibir os barramentos
-    da protoboard. Pressione este bot\xE3o"
+    da protoboard. Pressione este bot\xE3o."
   ballonDisplayTime: 10
   animationTriggers: []

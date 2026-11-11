@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FaseLED2_8
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: "bot\xE3o azul"
-  description: LED Azul acesso
+  description: LED Azul acesso.
   dependencies:
   - {fileID: 11400000, guid: ae8d132ef9d647e469ba82930dfcc997, type: 2}

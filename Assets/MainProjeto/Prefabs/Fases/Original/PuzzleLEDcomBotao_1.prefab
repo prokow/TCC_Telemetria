@@ -1157,7 +1157,8 @@ MonoBehaviour:
   m_StartingInteractionStrengthFilters: []
   m_AutoFindParentInteractableInHierarchy: 0
   m_ParentInteractableObject: {fileID: 2623658357789591022}
-  pressTask: {fileID: 11400000, guid: f26364f082a3b1d40a30aa3dcca0987a, type: 2}
+  pressTask: {fileID: 11400000, guid: ddca6c08642a0554f85d00e65ee32f4d, type: 2}
+  requireLedConfirmation: 0
 --- !u!114 &5123612399903352498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1188,7 +1189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39d41316af2a232438d597d45805be91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.TaskCompleteListener
-  task: {fileID: 11400000, guid: f26364f082a3b1d40a30aa3dcca0987a, type: 2}
+  task: {fileID: 11400000, guid: ddca6c08642a0554f85d00e65ee32f4d, type: 2}
   onComplete:
     m_PersistentCalls:
       m_Calls: []
@@ -1865,13 +1866,15 @@ MonoBehaviour:
   bottomExtend: 1
   _attachPoint: {fileID: 4382059215462089653}
   pivotInterno: {fileID: 8362768078614605244}
+  movementArea: {fileID: 0}
+  outsideAreaAction: 1
   autoConnectOnAwake: 1
   autoConnectPin: {x: -12, y: -3, z: 0}
   isAutoConnected: 0
   hasSpecificLimits: 1
   _limitMinX: -14
   _limitMaxX: -12
-  _limitMinY: -5
+  _limitMinY: -6
   _limitMaxY: -2
   putButtonTask: {fileID: 11400000, guid: 116bdde28b5ff7148818182e0c271d88, type: 2}
   feedbackCorreto: {fileID: 11400000, guid: 8cf59aa18fdb74d458221473b2be551f, type: 2}
@@ -2064,6 +2067,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4553283462550531245}
   - component: {fileID: 4221591816265962378}
+  - component: {fileID: 6355576902920179233}
+  - component: {fileID: 4556197368709671692}
   m_Layer: 0
   m_Name: NarrativaInicial
   m_TagString: Untagged
@@ -2093,7 +2098,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3961988097894404833}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e230b795d3211a54d94093611e43535e, type: 3}
   m_Name: 
@@ -2103,13 +2108,55 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 02404314961ecaf4f9525817e731a794, type: 2}
   - {fileID: 11400000, guid: 299e86dbbecc5e94c9660822ffb23e8d, type: 2}
   - {fileID: 11400000, guid: a4d643369b5b1844699ef580bb0556ba, type: 2}
-  tempoEntreFalas: 10
+  tempoEntreFalas: 7
   falaRoboTask: {fileID: 11400000, guid: f9262e84c71d2d645a0f8102db6548d2, type: 2}
   autoConcluir: 1
   botaoProximaQuest: {fileID: 0}
   onInitiateNarrative:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6355576902920179233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3961988097894404833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2e5e34ae1840bbaf9b59ba1af129ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainProjeto.Robot.Scripts.RobotNarrativeController
+  falas:
+  - {fileID: 11400000, guid: a1a1e60682272a248b486f63d2424a0d, type: 2}
+  - {fileID: 11400000, guid: 02404314961ecaf4f9525817e731a794, type: 2}
+  - {fileID: 11400000, guid: 299e86dbbecc5e94c9660822ffb23e8d, type: 2}
+  - {fileID: 11400000, guid: a4d643369b5b1844699ef580bb0556ba, type: 2}
+  tempoEntreFalas: 8
+  aguardarBotaoDoUsuario: 1
+  falaRoboTask: {fileID: 11400000, guid: f9262e84c71d2d645a0f8102db6548d2, type: 2}
+  autoConcluir: 1
+  botaoProximaQuest: {fileID: 0}
+  onInitiateNarrative:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &4556197368709671692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3961988097894404833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39d41316af2a232438d597d45805be91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.TaskCompleteListener
+  task: {fileID: 11400000, guid: f9262e84c71d2d645a0f8102db6548d2, type: 2}
+  onComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  lockInteractable: 1
 --- !u!1 &4226194521399244860
 GameObject:
   m_ObjectHideFlags: 0
@@ -2367,14 +2414,16 @@ MonoBehaviour:
   bottomExtend: 0
   _attachPoint: {fileID: 2543126949219196774}
   pivotInterno: {fileID: 3492982785721048800}
+  movementArea: {fileID: 0}
+  outsideAreaAction: 1
   autoConnectOnAwake: 1
   autoConnectPin: {x: -2, y: -4, z: 0}
   isAutoConnected: 0
   hasSpecificLimits: 1
   _limitMinX: -7
   _limitMaxX: -5
-  _limitMinY: -5
-  _limitMaxY: -3
+  _limitMinY: -6
+  _limitMaxY: -2
   putResistorTask: {fileID: 11400000, guid: 0a5b896400ab5aa41b116d8a94fbf88f, type: 2}
   feedbackCorreto: {fileID: 11400000, guid: 8cf59aa18fdb74d458221473b2be551f, type: 2}
   feedbackIncorreto: {fileID: 11400000, guid: 545530d3e79d29340a41435e6a03277b, type: 2}
@@ -2556,6 +2605,7 @@ GameObject:
   - component: {fileID: 1410853855018846182}
   - component: {fileID: 2730374909081863005}
   - component: {fileID: 2919059913494463569}
+  - component: {fileID: 3216706220565323216}
   m_Layer: 0
   m_Name: led
   m_TagString: Untagged
@@ -2739,9 +2789,9 @@ MonoBehaviour:
   m_MaxAngularVelocityDelta: 20
   canConnectToGround: 0
   canConnectToVcc: 1
-  canRotateComponent: 0
-  prefabRotacao: {fileID: 0}
-  alturaDica: 0.15
+  canRotateComponent: 1
+  prefabRotacao: {fileID: 4860756434700478051, guid: 73f6fd5267d877241927ec6bd38f3281, type: 3}
+  alturaDica: 1
   _rotationToUse: 2
   leftExtend: 0
   rightExtend: 1
@@ -2749,19 +2799,22 @@ MonoBehaviour:
   bottomExtend: 0
   _attachPoint: {fileID: 2939161419289886399}
   pivotInterno: {fileID: 8995373003058488570}
+  movementArea: {fileID: 0}
+  outsideAreaAction: 1
   autoConnectOnAwake: 1
   autoConnectPin: {x: -4, y: 3, z: 0}
   isAutoConnected: 0
   hasSpecificLimits: 1
   _limitMinX: -5
   _limitMaxX: -4
-  _limitMinY: 2
-  _limitMaxY: 4
+  _limitMinY: 1
+  _limitMaxY: 5
   pushButtonSwitch: {fileID: 8039313544174873621}
-  LedTask: {fileID: 0}
+  LedTask: {fileID: 11400000, guid: f26364f082a3b1d40a30aa3dcca0987a, type: 2}
+  lightUpTask: {fileID: 0}
   feedbackCorreto: {fileID: 11400000, guid: 8cf59aa18fdb74d458221473b2be551f, type: 2}
   feedbackIncorreto: {fileID: 11400000, guid: 545530d3e79d29340a41435e6a03277b, type: 2}
-  invertPolarity: 0
+  invertPolarity: 1
 --- !u!114 &2730374909081863005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2801,6 +2854,23 @@ MonoBehaviour:
   lookDirectionOffset: 0
   triggerLayers:
     m_Bits: 4294967295
+--- !u!114 &3216706220565323216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4840289438135945328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39d41316af2a232438d597d45805be91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.TaskCompleteListener
+  task: {fileID: 11400000, guid: f26364f082a3b1d40a30aa3dcca0987a, type: 2}
+  onComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  lockInteractable: 1
 --- !u!1 &4854010175840486574
 GameObject:
   m_ObjectHideFlags: 0
@@ -2887,10 +2957,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 7525331094019438425}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 6.4, y: -2}
-  m_SizeDelta: {x: 12.8, y: 4}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2716978583412106515
 CanvasRenderer:
@@ -3513,7 +3583,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7449201832819037482
 Transform:
   m_ObjectHideFlags: 0
@@ -4088,6 +4158,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5856331898332426676}
   - component: {fileID: 8989142811507698099}
+  - component: {fileID: 4335198678883890328}
   m_Layer: 0
   m_Name: NarrativaFinal
   m_TagString: Untagged
@@ -4124,13 +4195,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MainProjeto.Robot.Scripts.SequentialRobotNarrative
   falas:
   - {fileID: 11400000, guid: 479d995202d048d40a819db22ff6f825, type: 2}
-  tempoEntreFalas: 10
-  falaRoboTask: {fileID: 11400000, guid: ddca6c08642a0554f85d00e65ee32f4d, type: 2}
+  tempoEntreFalas: 5
+  falaRoboTask: {fileID: 11400000, guid: b2178ffe3e6a85d43b61a1a113436f13, type: 2}
   autoConcluir: 0
   botaoProximaQuest: {fileID: 0}
   onInitiateNarrative:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4335198678883890328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7505349080911092693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39d41316af2a232438d597d45805be91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.TaskCompleteListener
+  task: {fileID: 11400000, guid: b2178ffe3e6a85d43b61a1a113436f13, type: 2}
+  onComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  lockInteractable: 1
 --- !u!1 &7888296817846382380
 GameObject:
   m_ObjectHideFlags: 0

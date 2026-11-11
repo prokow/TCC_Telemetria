@@ -16,6 +16,6 @@ MonoBehaviour:
   sound: {fileID: 8300000, guid: f8a592c91732f6f4ebe682d7db8a432d, type: 3}
   volume: 0.5
   pitch: 1
-  ballonText: Neste tutorial, feche o circuito posicionando o resistor e os LEDs.
+  ballonText: 'Neste tutorial, feche o circuito posicionando o resistor e o LED vermelho. '
   ballonDisplayTime: 10
   animationTriggers: []

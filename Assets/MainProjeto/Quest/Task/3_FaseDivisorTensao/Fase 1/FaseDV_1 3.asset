@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FaseDV_1 3
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: measurer
-  description: Medidor do Multimetro indicando 6.00 V
+  description: Medidor do Multimetro indicando 6.00 V.
   dependencies:
   - {fileID: 11400000, guid: 8c3849c96e0097f439cc8b15910d0907, type: 2}

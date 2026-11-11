@@ -17,6 +17,6 @@ MonoBehaviour:
   volume: 0.5
   pitch: 1
   ballonText: "Por\xE9m, h\xE1 alguns componentes que est\xE3o em lugares incorretos
-    de acordo com os jumpers conectados"
+    de acordo com os jumpers conectados."
   ballonDisplayTime: 10
   animationTriggers: []

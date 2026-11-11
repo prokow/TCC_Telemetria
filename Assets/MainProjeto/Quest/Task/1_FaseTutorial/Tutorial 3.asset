@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72326935b2536704182b67d13dce8e2c, type: 3}
   m_Name: Tutorial 3
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
-  name: Coloque o Led Vermelho
-  description: Coloque o LED Amarelo no lugar certo
+  name: "Aperte o bot\xE3o para pr\xF3xima fase"
+  description: "Aperte o bot\xE3o ao lado do monitor para seguir para pr\xF3xima
+    fase"
   dependencies:
   - {fileID: 11400000, guid: 2a779e31cd7c3274a96719c5a4a744b3, type: 2}

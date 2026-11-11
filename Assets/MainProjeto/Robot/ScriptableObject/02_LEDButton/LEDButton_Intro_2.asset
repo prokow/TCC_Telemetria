@@ -17,6 +17,6 @@ MonoBehaviour:
   volume: 0.5
   pitch: 1
   ballonText: Aqui temos dois circuitos em aberto, arrume eles conforme foi ensinado
-    anteriormente
+    anteriormente.
   ballonDisplayTime: 10
   animationTriggers: []

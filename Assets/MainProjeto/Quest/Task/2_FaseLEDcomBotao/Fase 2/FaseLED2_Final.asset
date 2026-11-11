@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: "bot\xE3o"
   description: "Aperte o bot\xE3o ao lado do monitor para seguir para pr\xF3xima
-    fase"
+    fase."
   dependencies:
   - {fileID: 11400000, guid: 0b586a69af4db8c4586ee29dd5775bc4, type: 2}
   - {fileID: 11400000, guid: fe1facf1dcdd17b4d8b18515c70b7580, type: 2}

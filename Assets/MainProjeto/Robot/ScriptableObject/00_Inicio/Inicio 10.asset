@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Inicio 10
   m_EditorClassIdentifier: Assembly-CSharp::RobotSounds
   name: Conversa1
-  sound: {fileID: 8300000, guid: 91e28e6ac4f35574faca5013ecab6ec9, type: 3}
+  sound: {fileID: 8300000, guid: ae42c20de94e6524997f4d15fa276c0a, type: 3}
   volume: 0.502
   pitch: 1
-  ballonText: "Chega de papo vamos para a m\xE3o na massa, aperte no bot\xE3o a direita
-    do monitor, quando estiver verde"
+  ballonText: "Caso n\xE3o saiba qual intera\xE7\xE3o a se fazer, pressione o bot\xE3o
+    X no controle esquerdo para abrir o gerenciador de tarefas e verificar seu objetivo
+    atual."
   ballonDisplayTime: 10
   animationTriggers: []

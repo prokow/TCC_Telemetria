@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FaseLED2_6
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: "bot\xE3o azul"
-  description: Apertar botao do lado Azul para ligar LED Azul
+  description: Apertar botao do lado Azul para ligar LED Azul.
   dependencies:
   - {fileID: 11400000, guid: 0db138bb3ac230346ac968f5e020d5f6, type: 2}

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FaseLED2_3
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: colocar led vermelho
-  description: Coloque o LED Vermelho no lugar correto (verifique a polaridade)
+  description: Coloque o LED Vermelho no lugar correto (verifique a polaridade).
   dependencies:
   - {fileID: 11400000, guid: 8d6f9b67dba1a1a43a021d45298f7dce, type: 2}

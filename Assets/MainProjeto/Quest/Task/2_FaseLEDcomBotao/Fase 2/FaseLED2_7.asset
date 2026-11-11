@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FaseLED2_7
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: vermelho botao
-  description: LED Vermelho acesso
+  description: LED Vermelho acesso.
   dependencies:
   - {fileID: 11400000, guid: b07291d94c3340d40a0775cf67a2e214, type: 2}

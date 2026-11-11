@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FaseLED2_5
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: colocar led azul
-  description: Coloque o LED Azul no lugar correto (verifique a polaridade)
+  description: Coloque o LED Azul no lugar correto (verifique a polaridade).
   dependencies:
   - {fileID: 11400000, guid: 439facd20f7f072499ec7be8b03a0927, type: 2}

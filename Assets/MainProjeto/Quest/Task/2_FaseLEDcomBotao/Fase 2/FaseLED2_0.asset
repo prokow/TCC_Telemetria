@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: FaseLED2_0
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: Botao
-  description: "Avance as falas do rob\xF4 para liberar a atividade."
+  description: "Aguarde a fala do rob\xF4 para liberar a atividade."
   dependencies: []
