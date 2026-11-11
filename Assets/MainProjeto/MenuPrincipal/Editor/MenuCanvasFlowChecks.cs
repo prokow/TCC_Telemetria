@@ -137,6 +137,8 @@ namespace MainProjeto.MenuPrincipal.Editor
                 Check(context.Session.State == LocalSessionState.None, "chamada de iniciar sem escolha nao cria sessao");
                 back.onClick.Invoke();
                 await CheckParticipantScroll(ui, client, list, open, refresh, back, context);
+                CheckDeviceAuthorization(menu, main, list, open, start);
+                Debug.Log("DEVICE_AUTHORIZATION_CHECKS: PASS navegacao de autorizacao do dispositivo, sem rede.");
                 CheckMainLayout(menu, main);
 
                 SessionState.SetInt(ResultKey, 0);
@@ -147,6 +149,33 @@ namespace MainProjeto.MenuPrincipal.Editor
                 Debug.LogError("MENU_CANVAS_CHECKS: FAIL " + ex.GetType().Name + ": " + ex.Message);
             }
             finally { EditorApplication.isPlaying = false; }
+        }
+
+        private static void CheckDeviceAuthorization(MenuIntegrationController menu, GameObject main,
+            GameObject list, Button open, Button start)
+        {
+            var automatic = Field<AutomaticOperatorLogin>(menu, "automaticLogin");
+            var loginPanel = Field<GameObject>(menu, "loginPanel");
+            var login = Field<OperatorLoginUI>(menu, "loginUI");
+            typeof(MenuIntegrationController).GetField("authSession", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(menu, null);
+            var requires = typeof(AutomaticOperatorLogin).GetField("<RequiresAuthorization>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic);
+            requires.SetValue(automatic, true);
+            open.onClick.Invoke();
+            Check(loginPanel.activeInHierarchy && !list.activeInHierarchy && !main.activeInHierarchy, "dispositivo sem autorizacao abre login existente");
+            Check(!start.interactable, "sem autorizacao nao libera inicio");
+            Field<Button>(login, "backButton").onClick.Invoke();
+            Check(main.activeInHierarchy && !loginPanel.activeInHierarchy, "voltar do login preserva menu");
+            requires.SetValue(automatic, false);
+            open.onClick.Invoke();
+            Check(list.activeInHierarchy, "enquanto restaura acesso mostra estado da conexao");
+            requires.SetValue(automatic, true);
+            typeof(MenuIntegrationController).GetMethod("OnAutomaticStatus", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(menu, new object[] { "Autorize este dispositivo." });
+            Check(loginPanel.activeInHierarchy && !list.activeInHierarchy, "falta de autorizacao detectada durante consulta abre login");
+            requires.SetValue(automatic, false);
+            Authenticate(menu, SupabaseAuthSession.FromAccessToken(FixtureJwt(), DateTimeOffset.UtcNow));
+            Check(list.activeInHierarchy && !loginPanel.activeInHierarchy, "autorizacao concluida retorna aos participantes");
+            menu.CloseParticipants();
         }
 
         private static async Task CheckParticipantScroll(ParticipantSelectionUI ui, RosterFixture client,

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.XR.Interaction.Toolkit.Interactables;
 using UnityEngine;
@@ -95,3 +96,4 @@ namespace MainProjeto.Scripts.ParentCoponent
         }
     }
 }
+#endif

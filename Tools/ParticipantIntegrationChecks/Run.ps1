@@ -14,6 +14,7 @@ $sourceFiles = @(
     'Assets/MainProjeto/Telemetria/Supabase/SupabaseAuthService.cs',
     'Assets/MainProjeto/Telemetria/Supabase/SupabaseAuthSession.cs',
     'Assets/MainProjeto/Telemetria/Supabase/WindowsSupabaseSessionStore.cs',
+    'Assets/MainProjeto/Telemetria/Supabase/SupabaseSessionStore.cs',
     'Assets/MainProjeto/Telemetria/Supabase/RememberedOperatorLogin.cs',
     'Assets/MainProjeto/Telemetria/Supabase/SharedSupabaseSession.cs',
     'Assets/MainProjeto/Telemetria/Telemetry/Persistence/TelemetryCsvEncoder.cs',

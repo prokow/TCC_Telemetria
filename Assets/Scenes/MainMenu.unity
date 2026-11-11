@@ -1994,6 +1994,10 @@ PrefabInstance:
       propertyPath: m_Height
       value: 1.18
       objectReference: {fileID: 0}
+    - target: {fileID: 8531427368250638751, guid: 7af572a56f790044fb133e606f76036b, type: 3}
+      propertyPath: m_CameraYOffset
+      value: 1.4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 3394088860097961602, guid: 7af572a56f790044fb133e606f76036b, type: 3}
@@ -4762,7 +4766,7 @@ MonoBehaviour:
   loginPanel: {fileID: 900000000020001}
   changeAccountButton: {fileID: 900000000020079}
   automaticLogin: {fileID: 900000000040001}
-  simulatorScene: SampleScene
+  simulatorScene: ColetaDadosScene
 --- !u!1 &900000000010077
 GameObject:
   m_ObjectHideFlags: 0

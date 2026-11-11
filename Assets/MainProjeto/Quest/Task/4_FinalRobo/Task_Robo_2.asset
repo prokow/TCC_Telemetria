@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Task_Robo_2
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: Falas Iniciais do Robo
-  description: Falas Iniciais do Robo
+  description: 
   dependencies: []

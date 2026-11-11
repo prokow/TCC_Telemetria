@@ -6,7 +6,7 @@ namespace MainProjeto.Telemetria.Supabase
 {
     public sealed class OperatorAuthorizationMissingException : Exception
     {
-        public OperatorAuthorizationMissingException() : base("Configure uma vez a autorização deste computador para exibir os participantes.") { }
+        public OperatorAuthorizationMissingException() : base("Autorize este dispositivo com a conta do responsável para exibir os participantes.") { }
     }
 
     public sealed class RememberedOperatorLogin

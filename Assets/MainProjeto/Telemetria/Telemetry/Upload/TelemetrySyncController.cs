@@ -34,7 +34,7 @@ namespace MainProjeto.Telemetria.Upload
                     instance = null;
                 }
                 authOrigin = origin;
-                sharedAuth = new SharedSupabaseSession(new RememberedOperatorLogin(new SupabaseAuthService(new UnitySupabaseAuthTransport(connection)), new WindowsSupabaseSessionStore(connection.RestUrl)));
+                sharedAuth = new SharedSupabaseSession(new RememberedOperatorLogin(new SupabaseAuthService(new UnitySupabaseAuthTransport(connection)), SupabaseSessionStore.Create(connection.RestUrl)));
             }
             return sharedAuth;
         }

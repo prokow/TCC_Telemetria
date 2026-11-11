@@ -2,6 +2,7 @@ using System;
 using MainProjeto.Telemetria.Participants;
 using MainProjeto.Telemetria.Sessions;
 using MainProjeto.Telemetria.Supabase;
+using MainProjeto.Telemetria.Upload;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -64,7 +65,8 @@ namespace MainProjeto.MenuPrincipal.Scripts
             {
                 var connection = settings.CreateConnection();
                 selectionUI.Initialize(new ParticipantRepository(new SupabaseService(connection, () => authSession?.AccessToken)));
-                loginUI.Initialize(new SupabaseAuthService(new UnitySupabaseAuthTransport(connection)));
+                if (automaticLogin != null) loginUI.Initialize(TelemetrySyncController.GetAuthentication(connection));
+                else loginUI.Initialize(new SupabaseAuthService(new UnitySupabaseAuthTransport(connection)));
             }
             catch (Exception)
             {
@@ -95,6 +97,7 @@ namespace MainProjeto.MenuPrincipal.Scripts
         private void OnAutomaticAuthenticated(SupabaseAuthSession session)
         {
             if (starting) return;
+            bool completingLogin = loginPanel.activeSelf;
             bool changedAccount = authSession != null && authSession.UserId != session.UserId;
             authSession = session;
             if (changedAccount)
@@ -104,6 +107,7 @@ namespace MainProjeto.MenuPrincipal.Scripts
             }
             if (!selectionUI.IsRefreshing) selectionUI.RefreshInBackground();
             UpdateStartState();
+            if (completingLogin) { CloseLogin(); OpenParticipants(); }
         }
 
         private void OnAutomaticStatus(string message)
@@ -112,6 +116,11 @@ namespace MainProjeto.MenuPrincipal.Scripts
             authenticationStatus = message;
             selectionUI.ShowMessage(message);
             UpdateStartState();
+            if (automaticLogin.RequiresAuthorization && participantPanel.activeSelf)
+            {
+                OpenLogin();
+                loginUI.ShowMessage(message);
+            }
         }
 
         private void ShowParticipantPanel()
@@ -147,6 +156,7 @@ namespace MainProjeto.MenuPrincipal.Scripts
             authSession = session;
             context.TryClearSelection();
             selectionUI.InvalidateList();
+            if (automaticLogin != null) automaticLogin.Restore();
             CloseLogin();
             OpenParticipants();
         }
@@ -194,6 +204,12 @@ namespace MainProjeto.MenuPrincipal.Scripts
             if (starting) return;
             if (automaticLogin != null)
             {
+                if (!IsAuthenticated && automaticLogin.RequiresAuthorization)
+                {
+                    OpenLogin();
+                    loginUI.ShowMessage(authenticationStatus);
+                    return;
+                }
                 ShowParticipantPanel();
                 if (!IsAuthenticated)
                 {

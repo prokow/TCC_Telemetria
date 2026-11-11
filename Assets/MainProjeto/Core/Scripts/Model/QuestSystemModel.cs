@@ -60,6 +60,15 @@ namespace MainProjeto.Core.Scripts.Model
         [Header("Prefab's a se ligar ou desligar (circuitos)")] 
         [SerializeField]
         private List<GameObject> sceneCircuits = new List<GameObject>();
+
+
+        [Header("Ordem das Fases a ser aleatório ou não")] 
+        [SerializeField]
+        private bool randomQuestOrder = false;
+
+        [Header("Número de Quest's iniciais que não serão sorteadas (ex: mantém as 2 primeiras")]
+        [SerializeField] private int fixedStartingQuests = 2;
+        private List<int> _phaseOrder = new List<int>();
         
         // Esta struct substitui os booleanos individuais (lacreAberto, pinoColetado, pinoSolto)
         private class LoadedTask
@@ -112,6 +121,27 @@ namespace MainProjeto.Core.Scripts.Model
 
         private void Start()
         {
+
+            for (int i = 0; i < sequenceOfQuests.Count; i++)
+            {
+                _phaseOrder.Add(i);
+            }
+
+            if (randomQuestOrder)
+            {
+                int startIndex = Mathf.Clamp(fixedStartingQuests, 0, _phaseOrder.Count);
+
+                for (int i = startIndex; i < _phaseOrder.Count; i++)
+                {
+                    int temp = _phaseOrder[i];
+                    
+                    int randomIndex = UnityEngine.Random.Range(i, _phaseOrder.Count);
+                    
+                    _phaseOrder[i] = _phaseOrder[randomIndex];
+                    _phaseOrder[randomIndex] = temp;
+                }
+            }
+            
             StartNextQuest();
         }
 

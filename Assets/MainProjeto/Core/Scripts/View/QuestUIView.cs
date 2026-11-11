@@ -70,7 +70,7 @@ namespace MainProjeto.Core.Scripts.View
 
         public void ShowQuestCompleteMessage()
         {
-            textCompleted.SetText("Fase Concluída!");
+            textCompleted.SetText("Aguarde próximas orientações!");
             PlayQuestCompleteSound();
         }
 

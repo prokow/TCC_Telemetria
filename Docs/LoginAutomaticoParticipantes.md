@@ -8,9 +8,9 @@ O acesso da conta responsável é restaurado automaticamente e a lista vem diret
 
 ### Preencher diretamente no código
 
-Abra `Assets/MainProjeto/MenuPrincipal/Scripts/AutomaticOperatorLogin.cs`. No início da classe, preencha `OperatorEmail` e `OperatorPassword` com a conta de Authentication que já cadastra participantes. Salve e dê Play na MainMenu: o script faz o login automaticamente e guarda a autorização no Windows. Não é necessário preencher o Inspector ou executar PowerShell.
+Abra `Assets/MainProjeto/MenuPrincipal/Scripts/AutomaticOperatorLogin.cs`. No início da classe, preencha `OperatorEmail` e `OperatorPassword` com a conta de Authentication que já cadastra participantes. Salve e dê Play na MainMenu ou gere uma nova build: o script faz o login automaticamente no Editor, no Windows e no Meta Quest/Android. Não é necessário preencher o Inspector ou executar PowerShell.
 
-Essas duas variáveis estão em um bloco `#if UNITY_EDITOR`: valem para Play Mode e não entram no executável. O executável Windows usa a autorização guardada para o mesmo perfil deste computador. As credenciais digitadas no código ficam no próprio arquivo-fonte; remova-as antes de compartilhar esse arquivo. Deixe ambas vazias para usar apenas a autorização já salva ou uma das opções abaixo.
+Essas duas variáveis entram no executável/APK: as credenciais podem ser extraídas de uma cópia da build. As credenciais digitadas no código também ficam no próprio arquivo-fonte; remova-as antes de compartilhar esse arquivo. Deixe ambas vazias para usar apenas a autorização já salva ou uma das opções abaixo. O login manual usa os campos da tela em `OperatorLoginUI.cs`; não preencha credenciais fixas nesse método.
 
 ### Preencher pelo Inspector (alternativa)
 
@@ -66,11 +66,11 @@ O uploader posterior agora compartilha essa autenticacao entre cenas e envia JSO
 
 ## Credenciais e permissões
 
-Ao usar o configurador do Inspector ou PowerShell, a senha é utilizada para obter uma sessão de Authentication sem ser gravada no projeto ou no build. Se você optar por preencher as variáveis diretamente no código, a senha permanece nesse arquivo-fonte; o bloco é excluído do build. O token de acesso fica em memória; o refresh token fica protegido pelo Gerenciador de Credenciais do Windows. Esse token concede o acesso da conta responsável a quem puder usar esse perfil Windows.
+Ao usar o configurador do Inspector ou PowerShell, a senha é utilizada para obter uma sessão de Authentication sem ser gravada no projeto ou no build. Se você optar por preencher as variáveis diretamente no código, a senha permanece nesse arquivo-fonte e também entra no executável/APK. O token de acesso fica em memória; o refresh token fica protegido pelo Gerenciador de Credenciais do Windows. Esse token concede o acesso da conta responsável a quem puder usar esse perfil Windows.
 
 O Supabase continua aplicando as permissões e políticas RLS dessa conta. Não é necessário liberar leitura anônima nem usar `service_role`. As políticas SQL existentes não foram alteradas.
 
-Se o acesso for revogado ou a sessão expirar conforme as configurações do Supabase, execute o configurador novamente. Se faltar a autorização, a lista mostra uma mensagem de configuração e Iniciar permanece bloqueado. Falhas de rede são tentadas novamente automaticamente; uma falha de rede não apaga a autorização guardada.
+Se o acesso for revogado ou a sessão expirar conforme as configurações do Supabase, o aplicativo tenta autorizar novamente com as credenciais configuradas no código. Se elas estiverem vazias, execute o configurador novamente ou use o login manual. Se faltar a autorização, Iniciar permanece bloqueado. Falhas de rede são tentadas novamente automaticamente; uma falha de rede não apaga a autorização guardada.
 
 Para remover a autorização local, com o simulador fechado:
 
@@ -82,7 +82,7 @@ Isso remove a autorização deste Windows, sem revogar outras sessões no servid
 
 ## Compatibilidade e validação
 
-O armazenamento implementado nesta etapa é para **Windows, incluindo Play Mode e PC VR**. Um APK executado diretamente no Meta Quest/Android precisa de uma implementação própria de `ISupabaseSessionStore`, com armazenamento protegido do Android e provisionamento no dispositivo. A autorização Windows não é copiada para o APK.
+O armazenamento Windows atende **Play Mode e PC VR**. Para APK executado diretamente no **Meta Quest/Android**, o projeto seleciona armazenamento protegido por Android Keystore. Com `OperatorEmail` e `OperatorPassword` preenchidos, o headset faz o login automaticamente. A autorização Windows não é copiada para o APK. Consulte [Login no Meta Quest](LoginMetaQuest.md) para configurar e gerar o novo APK.
 
 Os testes locais compilam os scripts reais com as bibliotecas Unity e verificam renovação, rotação, cancelamento, falta de autorização, falhas de rede, UUIDs, sessão e sequência das quests. A validação da cena confere YAML, referências, callbacks e preservação dos objetos fora da integração. O configurador também pode ser verificado sem rede e sem acessar credenciais:
 

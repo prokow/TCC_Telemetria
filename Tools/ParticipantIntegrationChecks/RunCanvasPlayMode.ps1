@@ -17,7 +17,7 @@ foreach ($folder in @('Participants','Sessions')) {
         Copy-FixtureFile ('Assets/MainProjeto/Telemetria/' + $folder + '/' + $_.Name)
     }
 }
-foreach ($name in @('SupabaseConnection','SupabaseConnectionSettings','ISupabaseReadClient','SupabaseService','SupabaseAuthService','SupabaseAuthSession','WindowsSupabaseSessionStore','RememberedOperatorLogin','SharedSupabaseSession')) {
+foreach ($name in @('SupabaseConnection','SupabaseConnectionSettings','ISupabaseReadClient','SupabaseService','SupabaseAuthService','SupabaseAuthSession','WindowsSupabaseSessionStore','SupabaseSessionStore','RememberedOperatorLogin','SharedSupabaseSession')) {
     Copy-FixtureFile ('Assets/MainProjeto/Telemetria/Supabase/' + $name + '.cs')
 }
 foreach ($folder in @('Data','Upload','Persistence')) {
@@ -34,6 +34,10 @@ $auto = [regex]::Replace($auto, '(?m)^(\s*private static readonly string Operato
 
 # Usar os pacotes ja instalados, sem baixar pacotes nem reutilizar a Library do projeto aberto.
 $packages = [ordered]@{}
+$mainManifest = Get-Content -LiteralPath (Join-Path $workspacePath 'Packages/manifest.json') -Raw | ConvertFrom-Json
+foreach ($dependency in $mainManifest.dependencies.PSObject.Properties) {
+    if ($dependency.Name.StartsWith('com.unity.modules.')) { $packages[$dependency.Name] = $dependency.Value }
+}
 foreach ($package in @('com.unity.ugui','com.unity.nuget.newtonsoft-json')) {
     $installed = Get-ChildItem -LiteralPath (Join-Path $workspacePath 'Library/PackageCache') -Directory -Filter ($package + '@*') | Select-Object -First 1
     if (-not $installed) { throw "Pacote local ausente: $package" }
@@ -66,7 +70,11 @@ $deadline = [DateTime]::UtcNow.AddMinutes(4)
 while (-not $process.WaitForExit(1000)) {
     $licenseFailed = $false
     if (Test-Path -LiteralPath $reportPath) {
-        $licenseFailed = [IO.File]::ReadAllText($reportPath).Contains('Licensing initialization failed')
+        # Unity mantem o log aberto para escrita durante o teste.
+        $logStream = [IO.File]::Open($reportPath, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::ReadWrite)
+        $logReader = [IO.StreamReader]::new($logStream)
+        try { $licenseFailed = $logReader.ReadToEnd().Contains('Licensing initialization failed') }
+        finally { $logReader.Dispose() }
     }
     if ([DateTime]::UtcNow -ge $deadline -or $licenseFailed) {
         # Processo criado por este script; nunca encerrar o Editor original do responsavel.

@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using MainProjeto.Telemetria.Supabase;
 using TMPro;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace MainProjeto.MenuPrincipal.Scripts
         [SerializeField] private Button loginButton;
         [SerializeField] private Button backButton;
         [SerializeField] private TMP_Text statusText;
-        private SupabaseAuthService service;
+        private Func<string, string, CancellationToken, Task<SupabaseAuthSession>> signIn;
         private CancellationTokenSource currentLogin;
         public event Action<SupabaseAuthSession> Authenticated;
         public event Action BackRequested;
@@ -29,13 +30,14 @@ namespace MainProjeto.MenuPrincipal.Scripts
             backButton.onClick.AddListener(Back);
         }
 
-        public void Initialize(SupabaseAuthService authService) => service = authService;
+        public void Initialize(SupabaseAuthService authService) => signIn = authService.SignInAsync;
+        public void Initialize(SharedSupabaseSession authentication) => signIn = authentication.AuthorizeAsync;
         public void ShowMessage(string message) => statusText.text = message;
 
         public async void SignIn()
         {
             if (currentLogin != null) return;
-            if (service == null) { ShowMessage("A conexão não está configurada. Contate o responsável."); return; }
+            if (signIn == null) { ShowMessage("A conexão não está configurada. Contate o responsável."); return; }
             string email = emailInput.text;
             string password = passwordInput.text;
             passwordInput.DeactivateInputField();
@@ -46,7 +48,7 @@ namespace MainProjeto.MenuPrincipal.Scripts
             ShowMessage("Entrando...");
             try
             {
-                var pending = service.SignInAsync(email, password, cancellation.Token);
+                var pending = signIn(email, password, cancellation.Token);
                 password = null;
                 var session = await pending;
                 cancellation.Token.ThrowIfCancellationRequested();

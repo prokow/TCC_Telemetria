@@ -10,13 +10,12 @@ namespace MainProjeto.MenuPrincipal.Scripts
     [DisallowMultipleComponent]
     public sealed class AutomaticOperatorLogin : MonoBehaviour
     {
-#if UNITY_EDITOR
         // PREENCHA AQUI com a conta de Authentication que cadastra participantes.
-        // Usado automaticamente ao dar Play; este bloco nao entra no build.
-        private static readonly string OperatorEmail = "math.prokopowiski@gmail.com";
+        // Login automatico no Editor e nas builds, incluindo Meta Quest/Android.
+        // Os valores abaixo ficam incluidos no APK/executavel.
+        private static readonly string OperatorEmail = "math.prokopowiski@gmail.com ";
         private static readonly string OperatorPassword = "quimicadomal";
         private bool authorizedFromCode;
-#endif
 
         [SerializeField] private SupabaseConnectionSettings settings;
         private SharedSupabaseSession rememberedLogin;
@@ -26,6 +25,7 @@ namespace MainProjeto.MenuPrincipal.Scripts
         private double nextAttempt;
         private bool busy;
         public bool IsAuthenticating => busy;
+        public bool RequiresAuthorization { get; private set; }
         public string ConnectionStatus { get; private set; }
         public event Action<SupabaseAuthSession> Authenticated;
         public event Action<string> StatusChanged;
@@ -55,15 +55,16 @@ namespace MainProjeto.MenuPrincipal.Scripts
 
         private async Task<SupabaseAuthSession> RestoreConfiguredAccessAsync(CancellationToken cancellationToken)
         {
-#if UNITY_EDITOR
-            if (!authorizedFromCode && !string.IsNullOrWhiteSpace(OperatorEmail) && !string.IsNullOrEmpty(OperatorPassword))
+            bool hasCredentials = !string.IsNullOrWhiteSpace(OperatorEmail) && !string.IsNullOrEmpty(OperatorPassword);
+            if (authorizedFromCode || !hasCredentials)
             {
-                var authorized = await rememberedLogin.AuthorizeAsync(OperatorEmail, OperatorPassword, cancellationToken);
-                authorizedFromCode = true;
-                return authorized;
+                try { return await rememberedLogin.GetAsync(cancellationToken); }
+                catch (OperatorAuthorizationMissingException) when (hasCredentials) { }
+                catch (SupabaseAuthException ex) when (hasCredentials && ex.Failure == AuthFailure.Credentials) { }
             }
-#endif
-            return await rememberedLogin.GetAsync(cancellationToken);
+            var authorized = await rememberedLogin.AuthorizeAsync(OperatorEmail, OperatorPassword, cancellationToken);
+            authorizedFromCode = true;
+            return authorized;
         }
 
         // Usado pelo Inspector para autorizar uma vez. Email e senha não são campos serializados.
@@ -96,14 +97,19 @@ namespace MainProjeto.MenuPrincipal.Scripts
                 cancellationToken.ThrowIfCancellationRequested();
                 if (this == null || !ReferenceEquals(lifetime, operation)) return;
                 session = result;
+                RequiresAuthorization = false;
                 TelemetrySyncController.StartAfterAuthentication(connection, rememberedLogin);
                 Authenticated?.Invoke(result);
-                SetStatus("Acesso autorizado neste computador. Escolha o participante na lista.");
+                SetStatus("Acesso autorizado neste dispositivo. Escolha o participante na lista.");
             }
             catch (OperationCanceledException) { }
             catch (OperatorAuthorizationMissingException ex)
             {
-                if (IsCurrent(operation)) SetStatus(ex.Message);
+                if (IsCurrent(operation))
+                {
+                    RequiresAuthorization = true;
+                    SetStatus(ex.Message);
+                }
             }
             catch (PlatformNotSupportedException)
             {
@@ -115,11 +121,10 @@ namespace MainProjeto.MenuPrincipal.Scripts
             }
             catch (SupabaseAuthException ex)
             {
-#if UNITY_EDITOR
                 if (ex.Failure == AuthFailure.Credentials) authorizedFromCode = false;
-#endif
                 if (IsCurrent(operation))
                 {
+                    RequiresAuthorization = ex.Failure == AuthFailure.Credentials;
                     nextAttempt = Time.realtimeSinceStartupAsDouble + (ex.Failure == AuthFailure.Connection ? 15 : 60);
                     SetStatus(ex.Message);
                 }

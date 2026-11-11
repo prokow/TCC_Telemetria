@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72326935b2536704182b67d13dce8e2c, type: 3}
   m_Name: Tutorial 1
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
-  name: Coloque o Resistor no Lugar Certo
-  description: Coloque o Resistor no Lugar Certo
+  name: Coloque o Resistor no lugar correto
+  description: Coloque o Resistor no lugar correto
   dependencies:
   - {fileID: 11400000, guid: bd6185934abf6624fb66ec95cf1224c2, type: 2}

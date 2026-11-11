@@ -16,7 +16,7 @@ MonoBehaviour:
   sound: {fileID: 8300000, guid: df2b6a2e2ded63542ab186467e56a0b3, type: 3}
   volume: 0.502
   pitch: 1
-  ballonText: "Abaixo da protoboard h\xE1 um bot\xE3o para exibir os barramentos
-    da protoboard. "
+  ballonText: "Abaixo da protoboard h\xE1 um bot\xE3o laranja para exibir os barramentos
+    da protoboard. Pressione este bot\xE3o"
   ballonDisplayTime: 10
   animationTriggers: []

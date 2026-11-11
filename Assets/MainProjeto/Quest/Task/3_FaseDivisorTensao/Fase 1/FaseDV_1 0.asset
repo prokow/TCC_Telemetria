@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: FaseDV_1 0
   m_EditorClassIdentifier: Assembly-CSharp::MainProject.Trindade.Core.Scripts.ScriptableObjects.Task
   name: "Falas de introdu\xE7\xE3o "
-  description: "Aguarde o rob\xF4 terminar de falar para seguir com as intera\xE7\xF5es"
+  description: "Avance as falas do rob\xF4 para liberar a atividade."
   dependencies: []
